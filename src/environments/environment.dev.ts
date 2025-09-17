@@ -1,6 +1,5 @@
 export const environment = {
-  production: false,
-  // baseUrl:'http://localhost:8096'
-  // baseUrl:'http://172.16.30.13:8096'
-  baseUrl:'https://agroapps.net:8010'
+    production: false,
+    baseUrl:'https://apitransporte.agroapps.net:7005',
+    apiMaestra: 'https://apimaestra.agroapps.net:7003'
 }
