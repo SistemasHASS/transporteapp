@@ -41,16 +41,6 @@ export class LayoutComponent {
     this.usuario = await this.dexieService.showUsuario()
   }
   async logout() {
-    const sinenviar = await this.dexieService.showTrabajadoresPlanillaSinEnviar()
-    if(sinenviar.length > 0) {
-      Swal.fire({
-        title: 'Alerta!',
-        text: 'Por favor cierre toda su planilla y sincronice',
-        icon: 'info',
-        showConfirmButton: false,
-        timer: 2000
-      })
-    } else {
       Swal.fire({
         title: '¿Estás seguro?',
         text: 'Confirma que desea cerrar sesión',
@@ -70,10 +60,8 @@ export class LayoutComponent {
           this.dexieService.clearConfiguracion();
           this.dexieService.clearUsuario();
           this.dexieService.clearMaestras();
-          this.dexieService.clearDatosEnviados();
         }
       });
-    }
   }
 
   formatNombre(nombre: string): string {

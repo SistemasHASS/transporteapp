@@ -1,1 +1,71 @@
-<p>parametros works!</p>
+<div class="card firstCard">
+  <label class="col-lg-3 col-form-label" style="margin-top: -10px!important;">
+    <div class="text-center p-1" style="background-color: rgb(229, 234, 228);"><b><span>{{ usuario.nombre }}</span></b></div></label>
+  <label class="col-lg-3 col-form-label" style="margin-top: -10px!important;"> Fecha viaje : <b>{{ configuracion.fechaactual }}</b></label>
+  <label class="col-lg-3 col-form-label" style="margin-top: -10px!important;"> Horario &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: <b>{{ configuracion.horario }}</b></label>
+  <div class="card-body p-0">
+    <div class="row">
+      <div class="col-md-12 col-lg-6 col-xl-6 marginBottom">
+        <fieldset>
+          <div class="form-group row box-labelFloat">
+            <label class="col-lg-3 col-form-label"><b class="text-danger">*</b> Placa</label>
+            <div class="col-lg-9">
+              <app-dropdown [(ngModel)]="configuracion.placa"
+                [editable]="true" [data]="vehiculos" [valueField]="'placa'" 
+                [textShow2]="'una Placa'" [optionLabel]="'placa'"
+                [ngClass]="{'is-invalid': showValidation && !configuracion.placa, 'is-valid': configuracion.placa}"/>
+            </div>
+          </div>
+        </fieldset>
+      </div>
+      <div class="col-md-12 col-lg-6 col-xl-6 marginBottom">
+        <fieldset>
+          <div class="form-group row box-labelFloat">
+              <label class="col-lg-3 col-form-label"><b class="text-danger">*</b> Capacidad</label>
+              <div class="col-lg-9">
+                  <input type="number" class="form-control fuerte" 
+                  [ngClass]="{'is-invalid': showValidation && !configuracion.capacidad, 'is-valid': configuracion.capacidad}"
+                  [(ngModel)]="configuracion.capacidad">
+              </div>
+          </div>
+        </fieldset>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12 col-lg-6 col-xl-6 marginBottom">
+        <fieldset>
+          <div class="form-group row box-labelFloat">
+            <label class="col-lg-3 col-form-label"><b class="text-danger">*</b> Empresa</label>
+            <div class="col-lg-9">
+              <app-dropdown [(ngModel)]="configuracion.idempresa" 
+                [editable]="true" [data]="empresas" [valueField]="'ruc'" 
+                [textShow2]="'una Empresa'" [optionLabel]="'razonsocial'" 
+                [disabled]="configuracion.idempresa!=''"
+                [ngClass]="{'is-invalid': showValidation && !configuracion.idempresa, 'is-valid': configuracion.idempresa}"/>
+            </div>
+          </div>
+        </fieldset>
+      </div>
+      <div class="col-md-12 col-lg-6 col-xl-6 marginBottom">
+        <fieldset>
+          <div class="form-group row box-labelFloat">
+            <label class="col-lg-3 col-form-label"><b class="text-danger">*</b> Fundo</label>
+            <div class="col-lg-9">
+              <app-dropdown [(ngModel)]="configuracion.idfundo"
+                [editable]="true" [data]="fundos" [valueField]="'codigoFundo'" 
+                [textShow2]="'un Fundo'" [optionLabel]="'nombreFundo'" 
+                [disabled]="configuracion.idfundo!=''"
+                [ngClass]="{'is-invalid': showValidation && !configuracion.idfundo, 'is-valid': configuracion.idfundo}"/>
+            </div>
+          </div>
+        </fieldset>
+      </div>
+    </div>
+    <div class="botonGuardar mb-4 mt-4 d-flex align-items-center justify-content-center" style="gap: 1em;">
+      <button (click)="sincronizarTablasMaestras()" class="btn btn-primary botonCelular">
+        <i class="icon icon-sync"></i> Sincronizar</button>
+      <button (click)="guardarConfiguracion()" class="btn btn-success botonCelular">
+        <i class="icon icon-floppy-disk"></i> Guardar</button>
+    </div>
+  </div>
+</div>    

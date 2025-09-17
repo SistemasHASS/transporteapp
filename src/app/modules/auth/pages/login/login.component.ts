@@ -54,11 +54,12 @@ export class LoginComponent {
     if (this.loginForm.valid) {
       const loginData = this.loginForm.value;
       try {
-        const resp =  await this.authService.login(loginData.usuario, loginData.clave);
+        const resp = await this.authService.login(loginData.usuario, loginData.clave, 'TRANSPORTE');
         if (!!resp && resp.length > 0) {
           if (resp > 1) {
             this.mensajeLogin = 'El usuario cuenta con más de una cuenta, comuníquese con su administrador del servicio.';
           } else {
+            console.log('resp: ',resp);
             await this.dexieService.saveUsuario(resp[0]);
             this.login();
           }
