@@ -47,6 +47,10 @@ export class UtilsService {
     return date?moment(date).format('HH:mm'):0
   }
 
+  formatoTotalMinutosSegundos(date:any){
+    return date?moment(date).format('HH:mm:ss'):0
+  }
+
   formatoAnioMesDia(date?: any) {
     return date?moment(date).format('YYYYMMDD'):moment(new Date()).format('YYYYMMDD')
   }
@@ -56,7 +60,7 @@ export class UtilsService {
   }
 
   formatDateSec(date?:any){
-    return date?moment(date).format('YYYY-DD-MM hh:mm:ss'):moment(new Date()).format('YYYY-DD-MM hh:mm:ss');
+    return date?moment(date).format('YYYY-MM-DD HH:mm:ss'):moment(new Date()).format('YYYY-MM-DD HH:mm:ss');
   }
 
   bajarLetras(text: string): string {

@@ -49,4 +49,13 @@ export class MaestrasService {
       throw new Error(error.error?.message || 'Error obteniendo localidades');
     }
   }
+
+  getTrabajadores(params: any): Observable<any> {
+    const url = `${this.apiMaestra}/api/Maestros/get-activos`;
+    try {
+      return this.http.post<any>(url,params);
+    } catch (error: any) {
+      throw new Error(error.error?.message || 'Error obteniendo trabajadores');
+    }
+  }
 }

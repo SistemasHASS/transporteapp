@@ -16,7 +16,6 @@ export interface Usuario {
 export interface Configuracion {
     id: string
     fechaactual: string
-    horario: string
     idempresa: string
     idfundo: string
     placa: string
@@ -74,3 +73,34 @@ export interface Vehiculos {
     idempresa: string;
     fechaRegistro: string;
 }
+export interface Viaje {
+    idviaje: string;
+    fechahoraactual: string;
+    horario: string;
+    idempresa: string;
+    idfundo: string;
+    placa: string;
+    capacidad: number;
+    idpuntoinicio: string;
+    idpuntofin: string;
+    trabajadores: any[];
+    eliminado: number;
+    cerrado: number;
+    grupo: number;
+}
+
+export interface Trabajador {
+    id: string
+    ruc: string
+    nrodocumento: string
+    nombres: string
+    apellidopaterno: string
+    apellidomaterno: string
+    estado: number
+    motivo: string
+    bloqueado: number
+    eliminado: number
+    idmotivo: number
+    motivosalida: number
+}
+

@@ -28,7 +28,6 @@ export class ParametrosComponent {
   configuracion: Configuracion = {
     id: '',
     fechaactual: '',
-    horario: '',
     idempresa: '',
     idfundo: '',
     placa: '',
@@ -73,10 +72,6 @@ export class ParametrosComponent {
     if(configuracion) {
       this.configuracion = configuracion;
       await this.llenarDropdowns();
-    } else {
-    const horaActual = new Date().getHours();
-    const esNoche = horaActual >= 19 || (horaActual >= 0 && horaActual < 6);
-    this.configuracion.horario = esNoche ? 'Noche' : 'Dia';
     }
     this.configuracion.fechaactual = this.utilsService.formatDate3(new Date());
   }
@@ -120,6 +115,15 @@ export class ParametrosComponent {
           await this.ListarLocalidades();
         }
       })
+
+      const trabajadores = this.maestrasService.getTrabajadores([{idempresa: this.usuario?.idempresa}])
+      trabajadores.subscribe(
+        async (resp: any)=> {
+          if(!!resp && resp.length) {
+            await this.dexieService.saveTrabajadores(resp)
+          }
+        }
+      );
     } catch (error: any) {
       console.error(error);
       this.alertService.showAlert('Error!', '<p>Ocurrio un error</p><p>' + error + '</p>', 'error');
