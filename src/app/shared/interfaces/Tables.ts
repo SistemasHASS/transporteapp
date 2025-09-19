@@ -75,19 +75,29 @@ export interface Vehiculos {
 }
 export interface Viaje {
     idviaje: string;
-    fechahoraactual: string;
+    ruc: string;
+    fecharegistro: string;
     horario: string;
     idempresa: string;
     idfundo: string;
     placa: string;
     capacidad: number;
+    cantidad: number;
     idpuntoinicio: string;
     idpuntofin: string;
-    trabajadores: any[];
+    trabajadores: Pasajero[];
     eliminado: number;
     cerrado: number;
     grupo: number;
     estado: number;
+}
+
+export interface Pasajero {
+    nrodocumento: string;
+    ruc: string;
+    nombre: string;
+    fecharegistro: string;
+    eliminado: number;
 }
 
 export interface Trabajador {

@@ -98,6 +98,8 @@ export class DexieService extends Dexie {
   async saveViajes(viajes: Viaje[]) {await this.viajes.bulkPut(viajes);}
   async showViajes() {return await this.viajes.toArray();}
   async showViajeById(id: string) {return await this.viajes.where('id').equals(id).first()}
+  async updateViajeSincronizado(id: string, estado: number) {await this.viajes.update(id, {estado});}
+  async updateEliminadoViaje(id: string, eliminado: number) {await this.viajes.update(id, {eliminado});}
   async clearViajes() {await this.viajes.clear();}
   //
   async clearMaestras() {

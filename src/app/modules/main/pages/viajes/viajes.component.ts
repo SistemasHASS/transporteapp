@@ -9,6 +9,7 @@ import { AlertService } from '@/app/shared/alertas/alerts.service';
 import { Modal } from 'bootstrap';
 import { UtilsService } from '@/app/shared/utils/utils.service';
 import { CheckboxModule } from 'primeng/checkbox';
+import { TransporteService } from '../../services/transporte.service';
 
 @Component({
   selector: 'app-viajes',
@@ -54,12 +55,14 @@ export class ViajesComponent {
   showValidation: boolean = false;
   viaje: Viaje = {
     idviaje: '',
-    fechahoraactual: '',
+    ruc: '',
+    fecharegistro: '',
     horario: '',
     idempresa: '',
     idfundo: '',
     placa: '',
     capacidad: 0,
+    cantidad: 0,
     idpuntoinicio: '',
     idpuntofin: '',
     trabajadores: [],
@@ -73,7 +76,11 @@ export class ViajesComponent {
   trabajadoresActivos: any[] = [];
 
 
-  constructor(private dixiService: DexieService, private alertService: AlertService, private utilsService: UtilsService) { }
+  constructor(private dixiService: DexieService, 
+    private alertService: AlertService, 
+    private utilsService: UtilsService, 
+    private transporteService: TransporteService) 
+  { }
 
   ngAfterViewInit(): void {
     this.modalViajeInstance = new Modal(this.modalViaje.nativeElement);
@@ -140,12 +147,14 @@ export class ViajesComponent {
   clearViaje() {
     this.viaje = {
       idviaje: '',
-      fechahoraactual: '',
+      ruc: '',
+      fecharegistro: '',
       horario: '',
       idempresa: '',
       idfundo: '',
       placa: '',
       capacidad: 0,
+      cantidad: 0,
       idpuntoinicio: '',
       idpuntofin: '',
       trabajadores: [],
@@ -156,8 +165,62 @@ export class ViajesComponent {
     }
   }
 
-  sincronizarViajes() {
-    console.log("Sincronizar viajes");
+  async sincronizarViajes() {
+    const viajes = await this.dixiService.showViajes();
+    const viajescerrados = viajes.filter(v => v.cerrado == 1);
+    if(viajescerrados.length==0) {
+      this.alertService.showAlert('Alerta!','No hay viajes cerrados para sincronizar','warning');
+      return;
+    }
+    const confirmacion = await this.alertService.showConfirm('Confirmación', '¿Está seguro de sincronizar los viajes?','warning');
+    if (confirmacion) {
+      console.log('sinc: ', viajescerrados)
+      const resultado = await this.transporteService.enviarViajes(viajescerrados)
+      console.log('resultado: ', resultado)
+      if(!!resultado && resultado.length>0) {
+        if (resultado[0].errorgeneral == 0) {
+          // Todos correctos
+          for (const v of viajescerrados) {
+            await this.dixiService.updateViajeSincronizado(v.idviaje, 1);
+          }
+          await this.ListarViajes();
+          this.alertService.showAlert('¡Éxito!','Sincronización correcta','success');
+        }
+        if (resultado[0].errorgeneral == -1) {
+          this.alertService.showAlert('¡Error!','Error al sincronizar los viajes','error');
+        }
+        if (resultado[0].errorgeneral == 1) {
+          const errores = resultado[0].detalle.map((d: any) => d.id);
+          for (const v of viajescerrados) {
+            if (!errores.includes(v.idviaje)) {
+              await this.dixiService.updateViajeSincronizado(v.idviaje, 1);
+            }
+          }
+          await this.ListarViajes();
+          const erroresmensaje = resultado[0].detalle;
+          const listaErrores = erroresmensaje
+            .map((e: any) => `<li><b>${e.id}</b>: ${e.error}</li>`)
+            .join('');
+
+          const html = `
+            <h1 class="text-danger" style="font-size: 16px;">Error!</h1>
+            <br>
+            <span>Ocurrió un error al migrar los datos</span>
+            <ul style="text-align:left; margin-top:10px;">
+              ${listaErrores}
+            </ul>
+          `;
+
+          this.alertService.showAlertAcept('¡Atención!', html, 'warning');
+        }        
+      } else {
+        this.alertService.showAlert('¡Error!','Error al sincronizar los viajes','error')
+      }
+    }
+  }
+
+  crearFormatoEnvio(viajes: any[]) {
+    return   
   }
 
   async cancelarViaje() {
@@ -210,7 +273,7 @@ export class ViajesComponent {
             ruc: trabajador.ruc,
             nrodocumento: trabajador.nrodocumento,
             nombre: trabajador.nombre,
-            hora: this.utilsService.formatDateSec(),
+            fecharegistro: this.utilsService.formatDateSec(),
             eliminado: 0
           }
         ];
@@ -222,21 +285,35 @@ export class ViajesComponent {
             ruc: this.usuario.ruc,
             nrodocumento: this.dni,
             nombre: 'Registro Observado',
-            hora: this.utilsService.formatDateSec(),
+            fecharegistro: this.utilsService.formatDateSec(),
             eliminado: 0
           }
         ];
         if (mostrarNotificacion) this.alertService.showAlert('Alerta!','Trabajador agregado como NUEVO','success');
       }
-      this.viaje.capacidad = this.viaje.trabajadores.length;
+      this.viaje.cantidad = this.viaje.trabajadores.length;
       await this.dixiService.saveViaje(this.viaje);
     }
     this.dni = '';
   }
 
-  eliminarPersona(persona: any) {
-    console.log("Eliminar persona", persona);
+  async eliminarPersona(persona: any) {
+    const confirmacion = await this.alertService.showConfirm('Confirmación', '¿Está seguro de eliminar la persona?','warning');
+    if (confirmacion) {
+      const trabajador = this.viaje.trabajadores.find(
+        (t: any) => t.nrodocumento === persona.nrodocumento
+      );
+      if (trabajador) {
+        trabajador.eliminado = 1;
+        this.viaje.cantidad = +this.viaje.cantidad-1;
+        await this.dixiService.saveViaje(this.viaje);
+        this.alertService.showAlert('Alerta!','Persona eliminada correctamente','success');
+      } else {
+        this.alertService.showAlert('Alerta!','No se encontró al trabajador en el viaje','error');
+      }
+    }
   }
+  
 
   closeModalViaje() {
     this.modalViajeInstance.hide();
@@ -246,13 +323,15 @@ export class ViajesComponent {
     this.modalViajeInstance.hide();
     const horaActual = new Date().getHours();
     const esNoche = horaActual >= 19 || (horaActual >= 0 && horaActual < 6);
-    this.viaje.idviaje = this.usuario.ruc+this.usuario.documentoidentidad+this.utilsService.formatoAnioMesDiaHoraMinSec();
+    this.viaje.idviaje = this.usuario.ruc+this.usuario.documentoidentidad+this.configuracion.placa+this.utilsService.formatoAnioMesDiaHoraMinSec();
+    this.viaje.ruc = this.usuario.ruc;
     this.viaje.horario = esNoche ? 'Noche' : 'Dia';
     this.viaje.idempresa = this.configuracion.idempresa;
     this.viaje.idfundo = this.configuracion.idfundo;
     this.viaje.placa = this.configuracion.placa;
-    this.viaje.capacidad = this.viaje.trabajadores.length;
-    this.viaje.fechahoraactual = this.utilsService.formatDateSec();
+    this.viaje.capacidad = this.configuracion.capacidad;
+    this.viaje.cantidad = this.viaje.trabajadores.length;
+    this.viaje.fecharegistro = this.utilsService.formatDateSec();
     this.viaje.eliminado = 0;
     this.viaje.cerrado = 0;
     this.viaje.grupo = 0;
@@ -336,4 +415,21 @@ export class ViajesComponent {
     const grupos = [...new Set(this.viajes.map(v => v.grupo).filter(g => g > 0))];
     return grupos.length;
   }
+
+  get personas() {
+    return this.viaje.trabajadores.filter(t => t.eliminado === 0);
+  }
+
+  async eliminarViaje(viaje: any) {
+    const confirmacion = await this.alertService.showConfirm(
+      'Confirmación',
+      '¿Está seguro de eliminar el viaje?',
+      'warning'
+    );
+    if(confirmacion) {
+      this.dixiService.updateEliminadoViaje(viaje.idviaje,1);
+      this.ListarViajes();
+    }
+  }
+  
 }

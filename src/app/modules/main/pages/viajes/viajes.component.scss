@@ -1,5 +1,5 @@
 .tabla-trabajadores {
-  max-height: 120px;
+  max-height: 200px;
   font-size: 8px;
   font-weight: bold;
 }
@@ -40,4 +40,25 @@
 //   font-weight: 600;
 //   font-size: 12px;
 // }
+.fondo-rojo {
+  background-color: rgb(242, 208, 204) !important;
+  color: black !important;
+}
+
+.fondo-verde {
+  background-color: rgb(130, 218, 130) !important;
+  color: white !important;
+}
+.fila-eliminada {
+  background-color: #f8d7da !important; /* rojo clarito */
+  text-decoration: line-through;        /* tachado */
+  color: #b71c1c !important;            /* texto rojo fuerte */
+}
+
+.fila-eliminada .btn {
+  background-color: #f8d7da !important; /* rojo clarito */
+  text-decoration: line-through;        /* tachado */
+  color: #b71c1c !important;            /* texto rojo fuerte */
+}
+
 

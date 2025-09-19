@@ -31,23 +31,34 @@
                         <th style="text-align: center;">Turno</th>
                         <th style="text-align: center;">Grupo</th>
                         <th style="text-align: center;">#Per.</th>
+                        <th style="text-align: center;">Eliminar</th>
                     </tr>
                 </ng-template>
                 <ng-template pTemplate="body" let-row let-i="rowIndex">
-                    <tr>
+                    <tr [ngClass]="{
+                        'fondo-rojo': row.estado === 0 && row.eliminado !== 1,
+                        'fondo-verde': row.estado === 1 && row.eliminado !== 1,
+                        'fila-eliminada': row.eliminado === 1
+                      }">
                         <td style="text-align: center;">{{ i + 1 }}</td>
                         <td>
-                            <p-tableCheckbox [value]="row"></p-tableCheckbox>
+                            <p-tableCheckbox [disabled]="row.eliminado === 1" [value]="row"></p-tableCheckbox>
                         </td>
                         <td style="text-align: center;">
-                            <button class="btn btn-warning btn-sm" (click)="editarViaje(row)">
+                            <button class="btn btn-warning btn-sm" style="border: 1px solid #b6b6b6" (click)="editarViaje(row)"
+                            [disabled]="row.eliminado === 1">
                                 <i class="icon icon-pencil"></i>
                             </button>
                         </td>
                         <td style="text-align: center;">{{ formatoHora(row.fechahoraactual) }}</td>
                         <td style="text-align: center;">{{ row.horario }}</td>
                         <td style="text-align: center;">{{ row.grupo?'V-'+row.grupo:'Libre' }}</td>
-                        <td style="text-align: center;">{{ row.capacidad }}</td>
+                        <td style="text-align: center;">{{ row.cantidad }}</td>
+                        <td style="text-align: center;">
+                            <button class="btn btn-danger btn-sm" style="border: 1px solid #b6b6b6" (click)="eliminarViaje(row)">
+                                <i class="icon icon-trash"></i>
+                            </button>
+                        </td>
                     </tr>
                 </ng-template>
                 <ng-template pTemplate="emptymessage">
@@ -122,6 +133,9 @@
                     </button>
                 </div>
             </div>
+            <div class="row">
+                <h1 class="col-12">Total personas: <b style="font-size: 16px;">{{ personas.length }}</b></h1>
+            </div>
             <div class="row px-0">
                 <div class="col-12 overflow-auto tabla-trabajadores">
                   <table class="table table-striped table-bordered mb-0">
@@ -135,12 +149,11 @@
                       </tr>
                     </thead>
                     <tbody>
-                      <tr *ngFor="let persona of viaje.trabajadores; let i = index"
-                        [ngClass]="{'table-danger': persona.estado == 0, 'table-success': persona.estado == 1}">
+                      <tr *ngFor="let persona of personas; let i = index">
                         <td class="text-center">{{ i+1 }}</td>
                         <td style="font-size: 10px;">{{ persona.nrodocumento }}</td>
                         <td style="font-size: 10px;" class="nombre">{{ persona.nombre }}</td>
-                        <td style="font-size: 10px;">{{ formatoHora(persona.hora) }}</td>
+                        <td style="font-size: 10px;">{{ formatoHora(persona.fecharegistro) }}</td>
                         <td class="text-center">
                           <button class="btn btn-sm btn-danger" (click)="eliminarPersona(persona)">
                             <i class="icon icon-trash"></i>
@@ -157,7 +170,7 @@
                 <button class="btn btn-danger text-white" (click)="cancelarViaje()">
                     Salir <i class="icon icon-exit"></i> </button>
                 <button class="btn btn-success text-white" (click)="validarCantidad()">
-                    Guardar <i class="icon icon-floppy-disk"></i> </button>
+                    Cerrar y guardar <i class="icon icon-floppy-disk"></i> </button>
             </div>
         </div>
     </div>
