@@ -1,4 +1,4 @@
-import { Component, ViewChild, ElementRef } from '@angular/core';
+import { Component, ViewChild, ElementRef,NgZone } from '@angular/core';
 import { TableModule } from 'primeng/table';
 import { CommonModule } from '@angular/common';
 import { DropdownComponent } from "../../components/dropdown/dropdown.component";
@@ -80,7 +80,9 @@ export class ViajesComponent {
   constructor(private dixiService: DexieService, 
     private alertService: AlertService, 
     private utilsService: UtilsService, 
-    private transporteService: TransporteService) 
+    private transporteService: TransporteService,
+    private zone: NgZone
+  ) 
   { }
 
   ngAfterViewInit(): void {
@@ -360,8 +362,10 @@ export class ViajesComponent {
       if (camaraBridge && typeof camaraBridge.leerDnis === "function") {
         console.log("Llamando a CamaraBridge.leerDnis() desde WebView...");
         (window as any).onDniLeido = async (codigo: string) => {
-          this.dni = codigo;
-          await this.agregarPersona(false);
+          this.zone.run(async () => {
+            this.dni = codigo;
+            await this.agregarPersona(false);
+          });
         };
         camaraBridge.leerDnis();
       } else {
