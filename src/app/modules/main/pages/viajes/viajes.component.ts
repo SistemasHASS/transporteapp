@@ -56,6 +56,7 @@ export class ViajesComponent {
   viaje: Viaje = {
     idviaje: '',
     ruc: '',
+    conductor: '',
     fecharegistro: '',
     horario: '',
     idempresa: '',
@@ -118,7 +119,9 @@ export class ViajesComponent {
 
   async ListarViajes() {
     const viajes = await this.dixiService.showViajes();
-    this.viajes = viajes;
+    this.viajes = viajes.sort(
+      (a, b) => new Date(b.fecharegistro).getTime() - new Date(a.fecharegistro).getTime()
+    );    
   }
 
   getVehiculos() {
@@ -148,6 +151,7 @@ export class ViajesComponent {
     this.viaje = {
       idviaje: '',
       ruc: '',
+      conductor: '',
       fecharegistro: '',
       horario: '',
       idempresa: '',
@@ -325,6 +329,7 @@ export class ViajesComponent {
     const esNoche = horaActual >= 19 || (horaActual >= 0 && horaActual < 6);
     this.viaje.idviaje = this.usuario.ruc+this.usuario.documentoidentidad+this.configuracion.placa+this.utilsService.formatoAnioMesDiaHoraMinSec();
     this.viaje.ruc = this.usuario.ruc;
+    this.viaje.conductor = this.usuario.documentoidentidad;
     this.viaje.horario = esNoche ? 'Noche' : 'Dia';
     this.viaje.idempresa = this.configuracion.idempresa;
     this.viaje.idfundo = this.configuracion.idfundo;

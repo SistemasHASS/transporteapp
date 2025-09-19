@@ -76,6 +76,7 @@ export interface Vehiculos {
 export interface Viaje {
     idviaje: string;
     ruc: string;
+    conductor: string;
     fecharegistro: string;
     horario: string;
     idempresa: string;

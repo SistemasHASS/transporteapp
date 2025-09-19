@@ -50,9 +50,18 @@
                                 <i class="icon icon-pencil"></i>
                             </button>
                         </td>
-                        <td style="text-align: center;">{{ formatoHora(row.fechahoraactual) }}</td>
+                        <td style="text-align: center;">{{ formatoHora(row.fecharegistro) }}</td>
                         <td style="text-align: center;">{{ row.horario }}</td>
-                        <td style="text-align: center;">{{ row.grupo?'V-'+row.grupo:'Libre' }}</td>
+                        <!-- <td style="text-align: center;">{{ row.grupo?'V-'+row.grupo:'Libre' }}</td> -->
+                        <td style="text-align: center;">
+                            @if (row.grupo) {
+                              <span class="grupo-circle" [ngClass]="'grupo-' + row.grupo">
+                                V-{{ row.grupo }}
+                              </span>
+                            } @else {
+                              <span class="grupo-circle grupo-libre">Libre</span>
+                            }
+                          </td>                                             
                         <td style="text-align: center;">{{ row.cantidad }}</td>
                         <td style="text-align: center;">
                             <button class="btn btn-danger btn-sm" style="border: 1px solid #b6b6b6" (click)="eliminarViaje(row)">
@@ -229,7 +238,7 @@
                     <div class="col-md-12">
                         <div>
                             <label for="placa"><i class="icon icon-user icon-2x"></i> Personas en ruta</label>
-                            <input type="number" [(ngModel)]="viaje.capacidad" class="form-control" style="font-size: 20px;"/>
+                            <input type="number" [(ngModel)]="viaje.cantidad" class="form-control" style="font-size: 20px;"/>
                         </div>
                     </div>
                 </div>
