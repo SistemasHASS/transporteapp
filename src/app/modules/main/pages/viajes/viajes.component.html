@@ -1,15 +1,15 @@
 <div *ngIf="!viajenuevo" class="card firstCard">
     <div class="card-body d-flex justify-content-center gap-3 align-items-center sin">
         <div class="cards-totales bg-white p-3 text-center"
-             style="border: 1px solid rgb(230, 230, 230);border-radius: 10px;">
+             style="border: 1px solid rgb(83, 76, 76);border-radius: 10px;">
           <i class="icon-truck icon-2x mb-2"></i>
           <h3 class="font-weight-bold mb-0" style="font-size: 2rem;">{{viajes.length}}</h3>
           <span class="text-muted">Total viajes</span>
         </div>
         <div class="cards-totales bg-white p-3 text-center"
-            style="border: 1px solid rgb(230, 230, 230);border-radius: 10px;">
+            style="border: 1px solid rgb(83, 76, 76);border-radius: 10px;">
             <i class="icon-road icon-2x mb-2"></i>
-            <h3 class="font-weight-bold mb-0" style="font-size: 2rem;">0</h3>
+            <h3 class="font-weight-bold mb-0" style="font-size: 2rem;">{{obtenerCantidadGrupos()}}</h3>
             <span class="text-muted">Recorridos</span>
         </div>
     </div> 
@@ -29,6 +29,7 @@
                         <th style="text-align: center;">Editar</th>
                         <th style="text-align: center;">Hora</th>
                         <th style="text-align: center;">Turno</th>
+                        <th style="text-align: center;">Grupo</th>
                         <th style="text-align: center;">#Per.</th>
                     </tr>
                 </ng-template>
@@ -45,7 +46,8 @@
                         </td>
                         <td style="text-align: center;">{{ formatoHora(row.fechahoraactual) }}</td>
                         <td style="text-align: center;">{{ row.horario }}</td>
-                        <td style="text-align: center;">{{ row.trabajadores.length }}</td>
+                        <td style="text-align: center;">{{ row.grupo?'V-'+row.grupo:'Libre' }}</td>
+                        <td style="text-align: center;">{{ row.capacidad }}</td>
                     </tr>
                 </ng-template>
                 <ng-template pTemplate="emptymessage">
@@ -60,15 +62,17 @@
     </div>
 </div>
 <div *ngIf="!viajenuevo" class="card cardbuttons">
-    <div class="text-center d-flex justify-content-center gap-2 mb-3">
-        <button class="btn btn-success text-white" (click)="nuevoViaje()">
-            Nuevo viaje <i class="icon icon-plus2"></i> </button>
-        <button class="btn btn-primary text-white" (click)="sincronizarViajes()">
-            Sincronizar <i class="icon icon-sync"></i> </button>
+    <div *ngIf="selectedViajes.length>0" class="text-center d-flex justify-content-center gap-2 mb-3">
+        <button class="btn-botomm-principal btn btn-info text-white" (click)="unirViajes()">
+            Unir viajes <i class="icon icon-link"></i> </button>
+        <button class="btn-botomm-principal btn btn-danger text-white" (click)="liberarViaje()">
+            Desunir viaje <i class="icon icon-sync"></i> </button>
     </div>
-    <div class="text-center d-flex justify-content-center gap-2">
-        <!-- <button class="btn btn-warning text-white" (click)="nuevoViaje()">
-            Unir viajes <i class="icon icon-link"></i> </button> -->
+    <div class="text-center d-flex justify-content-center gap-2 mb-3">
+        <button class="btn-botomm-principal btn btn-success text-white" (click)="nuevoViaje()">
+            Nuevo viaje <i class="icon icon-plus2"></i> </button>
+        <button class="btn-botomm-principal btn btn-primary text-white" (click)="sincronizarViajes()">
+            Sincronizar <i class="icon icon-sync"></i> </button>
     </div>
 </div>
 <div *ngIf="viajenuevo" class="card firstCard p-0">
@@ -131,7 +135,8 @@
                       </tr>
                     </thead>
                     <tbody>
-                      <tr *ngFor="let persona of viaje.trabajadores; let i = index">
+                      <tr *ngFor="let persona of viaje.trabajadores; let i = index"
+                        [ngClass]="{'table-danger': persona.estado == 0, 'table-success': persona.estado == 1}">
                         <td class="text-center">{{ i+1 }}</td>
                         <td style="font-size: 10px;">{{ persona.nrodocumento }}</td>
                         <td style="font-size: 10px;" class="nombre">{{ persona.nombre }}</td>
@@ -150,8 +155,8 @@
         <div class="card-footer">
             <div class="text-center d-flex justify-content-center gap-2">
                 <button class="btn btn-danger text-white" (click)="cancelarViaje()">
-                    Cancelar <i class="icon icon-exit"></i> </button>
-                <button class="btn btn-success text-white" (click)="guardarViaje()">
+                    Salir <i class="icon icon-exit"></i> </button>
+                <button class="btn btn-success text-white" (click)="validarCantidad()">
                     Guardar <i class="icon icon-floppy-disk"></i> </button>
             </div>
         </div>
@@ -162,12 +167,12 @@
     <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title"><i class="icon-file-text mr-2"></i>Lectura de codigo</h5>
+                <h5 class="modal-title"><i class="icon-file-text mr-2"></i>Puntos de viaje</h5>
             </div>
             <div class="modal-body">
                 <div class="row">
                     <div class="col-md-6 d-flex align-items-center">
-                        <div style="flex: 0 0 60px;"><i class="icon icon-car icon-2x"></i></div>
+                        <div style="flex: 0 0 50px;"><i class="icon icon-car icon-2x"></i></div>
                         <div style="flex: 1;">
                             <label for="placa">Punto de inicio</label>
                             <app-dropdown [(ngModel)]="viaje.idpuntoinicio"
@@ -177,7 +182,7 @@
                         </div>
                     </div>
                     <div class="col-md-6 d-flex align-items-center">
-                        <div style="flex: 0 0 60px;"><i class="icon icon-car icon-2x"></i></div>
+                        <div style="flex: 0 0 50px;"><i class="icon icon-car icon-2x"></i></div>
                         <div style="flex: 1;">
                             <label for="placa">Punto de fin</label>
                             <app-dropdown [(ngModel)]="viaje.idpuntofin"
@@ -194,6 +199,34 @@
                 </button>
                 <button (click)="crearViaje()" type="button" class="btn btn-success" data-dismiss="modal">
                     Crear <i class="icon icon-floppy-disk"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal cantidad -->
+<div class="modal" #modalCantidad>
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"><i class="icon-file-text mr-2"></i>Cantidad de pasajeros</h5>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div>
+                            <label for="placa"><i class="icon icon-user icon-2x"></i> Personas en ruta</label>
+                            <input type="number" [(ngModel)]="viaje.capacidad" class="form-control" style="font-size: 20px;"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button (click)="closeModalCantidad()" type="button" class="btn btn-link" data-dismiss="modal">
+                    Cancelar
+                </button>
+                <button (click)="guardarViaje()" type="button" class="btn btn-success" data-dismiss="modal">
+                    Guardar <i class="icon icon-floppy-disk"></i>
                 </button>
             </div>
         </div>

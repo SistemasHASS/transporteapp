@@ -101,10 +101,19 @@ export class DropdownComponent implements ControlValueAccessor, OnChanges {
   onInputChange(event: Event) {
     const input = event.target as HTMLInputElement;
     const value = input.value;
+  
+    if (!value || value.trim() === '') {
+      this.selectedItem = null;
+      this.onChange(null);
+      this.filteredData = [...this.data];
+      this.isDrop = false;
+      return;
+    }
     this.filterData(value);
-    this.isDrop = !!value;
+    this.isDrop = true;
   }
 
+  
   filterData(searchTerm: string) {
     const lowerSearch = searchTerm.toLowerCase();
     this.filteredData = this.data.filter((item) =>

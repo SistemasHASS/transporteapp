@@ -21,6 +21,9 @@ export class ViajesComponent {
 
   @ViewChild('modalViaje') modalViaje!: ElementRef;
   modalViajeInstance!: Modal;
+
+  @ViewChild('modalCantidad') modalCantidad!: ElementRef;
+  modalCantidadInstance!: Modal;
   
   viajes: any[] = [];
   selectedViajes: any[] = [];
@@ -62,7 +65,8 @@ export class ViajesComponent {
     trabajadores: [],
     eliminado: 0,
     cerrado: 0,
-    grupo: 0 
+    grupo: 0,
+    estado: 0
   }
   localidades: any[] = [];
   dni: string = '';
@@ -73,16 +77,17 @@ export class ViajesComponent {
 
   ngAfterViewInit(): void {
     this.modalViajeInstance = new Modal(this.modalViaje.nativeElement);
+    this.modalCantidadInstance = new Modal(this.modalCantidad.nativeElement);
   }
 
-  ngOnInit(): void {
+  async ngOnInit() {
     this.getUsuario();
     this.getConfiguracion();
     this.getVehiculos();
     this.getLocalidades();
     this.getTrabajadoresActivos();
     this.validarViajeAbierto();
-    this.ListarViajes();
+    await this.ListarViajes();
   }
 
   async validarViajeAbierto() {
@@ -115,7 +120,7 @@ export class ViajesComponent {
 
   async getLocalidades() {
     const localidades = await this.dixiService.localidades.toArray();
-    this.localidades = localidades;
+    this.localidades = localidades.filter(l => l.idempresa == this.usuario.idempresa);
   }
 
   async getTrabajadoresActivos() {
@@ -146,7 +151,8 @@ export class ViajesComponent {
       trabajadores: [],
       eliminado: 0,
       cerrado: 0,
-      grupo: 0 
+      grupo: 0,
+      estado: 0 
     }
   }
 
@@ -154,16 +160,19 @@ export class ViajesComponent {
     console.log("Sincronizar viajes");
   }
 
-  cancelarViaje() {
+  async cancelarViaje() {
+    await this.ListarViajes();
     this.viajenuevo = false;
   }
 
   async guardarViaje() {
+    this.modalCantidadInstance.hide();
     const confirmacion = await this.alertService.showConfirm('Confirmación', '¿Está seguro de guardar el viaje?','warning');
     if (confirmacion) {
       this.viaje.cerrado = 1;
       this.dixiService.saveViaje(this.viaje);
       this.viajenuevo = false;
+      this.ListarViajes();
       this.alertService.showAlert('Alerta!','Viaje guardado correctamente','success');
     }
   }
@@ -257,15 +266,15 @@ export class ViajesComponent {
 
   editarViaje(viaje: any) {
     this.viaje = viaje;
+    console.log('Editar viaje: ',this.viaje);
     this.viajenuevo = true;
   }
 
   toggleScanner() {
     try {
       const camaraBridge = (window as any).CamaraBridge;
-  
       if (camaraBridge && typeof camaraBridge.leerDnis === "function") {
-        console.log("📲 Llamando a CamaraBridge.leerDnis() desde WebView...");
+        console.log("Llamando a CamaraBridge.leerDnis() desde WebView...");
         (window as any).onDniLeido = async (codigo: string) => {
           this.dni = codigo;
           await this.agregarPersona(false);
@@ -277,5 +286,54 @@ export class ViajesComponent {
     } catch (error) {
       this.alertService.showAlert('Alerta!','Error al leer el DNI','error');
     }
+  }
+
+  async validarCantidad() {
+    if(this.viaje.trabajadores.length==0){
+      this.modalCantidadInstance.show();
+    } else {
+      this.guardarViaje();
+    }
+  }
+
+  closeModalCantidad() {
+    this.modalCantidadInstance.hide();
+  }
+
+  async unirViajes() {
+    const confirmacion = await this.alertService.showConfirm(
+      'Confirmación',
+      '¿Está seguro de unir el viaje?',
+      'warning'
+    );
+    if (confirmacion) {
+      const maxGrupo = Math.max(...this.viajes.map(v => v.grupo), 0);
+      const nuevoGrupo = maxGrupo + 1;
+      this.selectedViajes.forEach(viaje => {
+        viaje.grupo = nuevoGrupo;
+        this.dixiService.saveViaje(viaje);
+      });
+      this.alertService.showAlert('Alerta!','Viajes unidos correctamente','success');
+      this.selectedViajes.length=0;
+      this.ListarViajes();
+    }
+  }
+
+  liberarViaje() {
+    const gruposALiberar = [...new Set(this.selectedViajes.map(v => v.grupo))];
+    this.viajes.forEach(viaje => {
+      if (gruposALiberar.includes(viaje.grupo)) {
+        viaje.grupo = 0;
+        this.dixiService.saveViaje(viaje);
+      }
+    });
+    this.alertService.showAlert('Alerta!','Viajes liberados correctamente','success');
+    this.selectedViajes.length=0;
+    this.ListarViajes();
+  }
+  
+  obtenerCantidadGrupos(): number {
+    const grupos = [...new Set(this.viajes.map(v => v.grupo).filter(g => g > 0))];
+    return grupos.length;
   }
 }

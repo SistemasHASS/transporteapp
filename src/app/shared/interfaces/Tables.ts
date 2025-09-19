@@ -87,6 +87,7 @@ export interface Viaje {
     eliminado: number;
     cerrado: number;
     grupo: number;
+    estado: number;
 }
 
 export interface Trabajador {

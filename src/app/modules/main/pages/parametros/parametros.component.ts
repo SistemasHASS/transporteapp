@@ -145,7 +145,8 @@ export class ParametrosComponent {
   
   async guardarConfiguracion() {
     this.showValidation = true;
-    if(this.configuracion.idempresa === '' || this.configuracion.idfundo === '' || this.configuracion.placa === '' || this.configuracion.capacidad === 0) {
+    if(!this.configuracion.placa || this.configuracion.placa.trim() === '' ||
+      this.configuracion.idempresa === '' || this.configuracion.idfundo === '' || this.configuracion.capacidad === 0) {
       this.alertService.showAlert('Advertencia!','Debe seleccionar todos los campos','warning')
     } else {
       this.configuracion.id = this.usuario.ruc+this.usuario.documentoidentidad;
@@ -153,4 +154,12 @@ export class ParametrosComponent {
       this.alertService.showAlert('¡Éxito!','La operación se completó correctamente','success')
     }
   }
+
+  async darCapacidad() {
+    const vehiculo = this.vehiculos.find((vehiculo: any) => vehiculo.placa == this.configuracion.placa)
+    if(vehiculo) {
+      this.configuracion.capacidad = vehiculo.capacidad
+    }
+  }
+  
 }

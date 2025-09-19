@@ -9,7 +9,7 @@
           <div class="form-group row box-labelFloat">
             <label class="col-lg-3 col-form-label"><b class="text-danger">*</b> Placa</label>
             <div class="col-lg-9">
-              <app-dropdown [(ngModel)]="configuracion.placa"
+              <app-dropdown [(ngModel)]="configuracion.placa" (ngModelChange)="darCapacidad()" 
                 [editable]="true" [data]="vehiculos" [valueField]="'placa'" 
                 [textShow2]="'una Placa'" [optionLabel]="'placa'"
                 [ngClass]="{'is-invalid': showValidation && !configuracion.placa, 'is-valid': configuracion.placa}"/>
