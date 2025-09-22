@@ -69,7 +69,6 @@ export class ReporteViajesComponent {
         this.alertService.cerrarModalCarga();
         if(result.length>0) {
           this.data = result
-          console.log('reporte viajes',this.data);
         } else {
           this.data.length = 0
           this.alertService.showAlert('Importante!', 'No existe un reporte para mostrar', 'info');

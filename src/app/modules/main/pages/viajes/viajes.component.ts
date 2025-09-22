@@ -180,9 +180,7 @@ export class ViajesComponent {
     }
     const confirmacion = await this.alertService.showConfirm('Confirmación', '¿Está seguro de sincronizar los viajes?','warning');
     if (confirmacion) {
-      console.log('sinc: ', viajescerrados)
       const resultado = await this.transporteService.enviarViajes(viajescerrados)
-      console.log('resultado: ', resultado)
       if(!!resultado && resultado.length>0) {
         if (resultado[0].errorgeneral == 0) {
           // Todos correctos
@@ -239,6 +237,7 @@ export class ViajesComponent {
     const confirmacion = await this.alertService.showConfirm('Confirmación', '¿Está seguro de guardar el viaje?','warning');
     if (confirmacion) {
       this.viaje.cerrado = 1;
+      this.viaje.estado = 0;
       this.dixiService.saveViaje(this.viaje);
       this.viajenuevo = false;
       this.ListarViajes();
@@ -361,7 +360,6 @@ export class ViajesComponent {
     try {
       const camaraBridge = (window as any).CamaraBridge;
       if (camaraBridge && typeof camaraBridge.leerDnis === "function") {
-        console.log("Llamando a CamaraBridge.leerDnis() desde WebView...");
         (window as any).onDniLeido = async (codigo: string) => {
           this.zone.run(async () => {
             this.dni = codigo;
@@ -378,7 +376,7 @@ export class ViajesComponent {
   }
 
   async validarCantidad() {
-    if(this.viaje.trabajadores.length==0){
+    if((!!this.viaje.trabajadores && this.viaje.trabajadores.length==0) || !this.viaje.trabajadores){
       this.modalCantidadInstance.show();
     } else {
       this.guardarViaje();
@@ -400,6 +398,7 @@ export class ViajesComponent {
       const nuevoGrupo = maxGrupo + 1;
       this.selectedViajes.forEach(viaje => {
         viaje.grupo = nuevoGrupo;
+        viaje.estado = 0;
         this.dixiService.saveViaje(viaje);
       });
       this.alertService.showAlert('Alerta!','Viajes unidos correctamente','success');
@@ -427,7 +426,7 @@ export class ViajesComponent {
   }
 
   get personas() {
-    return this.viaje.trabajadores.filter(t => t.eliminado === 0);
+    return !!this.viaje.trabajadores && this.viaje.trabajadores.length>0 ? this.viaje.trabajadores.filter(t => t.eliminado === 0) : [];
   }
 
   async eliminarViaje(viaje: any) {

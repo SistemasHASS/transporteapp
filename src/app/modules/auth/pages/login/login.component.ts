@@ -79,7 +79,6 @@ export class LoginComponent {
   }
 
   async recuperarViajes(usuario: any) {
-    console.log('usu: ',usuario);
     const formato = [
 			{
 				ruc: usuario.ruc,
