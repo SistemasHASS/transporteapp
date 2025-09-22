@@ -295,10 +295,12 @@ export class ViajesComponent {
             eliminado: 0
           }
         ];
-        if (mostrarNotificacion) this.alertService.showAlert('Alerta!','Trabajador agregado como NUEVO','success');
+        if (mostrarNotificacion) this.alertService.showAlert('Alerta!','Persona agregada como NUEVO','success');
       }
       this.viaje.cantidad = this.viaje.trabajadores.length;
       await this.dixiService.saveViaje(this.viaje);
+    } else {
+      if(mostrarNotificacion) this.alertService.showAlert('Alerta!','Pasajero ya registrado','error');
     }
     this.dni = '';
   }
@@ -352,7 +354,6 @@ export class ViajesComponent {
 
   editarViaje(viaje: any) {
     this.viaje = viaje;
-    console.log('Editar viaje: ',this.viaje);
     this.viajenuevo = true;
   }
 

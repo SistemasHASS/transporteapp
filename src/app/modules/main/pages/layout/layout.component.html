@@ -47,7 +47,7 @@
           <li *ngIf="usuario?.idrol.includes('CHOTRA') || usuario?.idrol.includes('SUTAR') || usuario?.idrol.includes('ADTRA')" class="sidebar-item" (click)="toggleSidebar()">
             <a routerLink="./viajes" routerLinkActive="active" class="sidebar-link" aria-expanded="false">
               <span>
-                <i class="icon icon-equalizer"></i>
+                <i class="icon icon-truck"></i>
               </span>
               <span class="hide-menu"> Viajes</span>
             </a>
@@ -55,6 +55,22 @@
           <li class="nav-small-cap">
             <i class="ti ti-dots nav-small-cap-icon fs-6"></i>
             <span class="hide-menu"> Reportes</span>
+          </li>
+          <li *ngIf="usuario?.idrol.includes('CHOTRA') || usuario?.idrol.includes('SUTAR') || usuario?.idrol.includes('ADTRA')" class="sidebar-item" (click)="toggleSidebar()">
+            <a routerLink="./reporte-viajes" routerLinkActive="active" class="sidebar-link" aria-expanded="false">
+              <span>
+                <i class="icon icon-stats-bars2"></i>
+              </span>
+              <span class="hide-menu"> Reporte de viajes</span>
+            </a>
+          </li>
+          <li *ngIf="usuario?.idrol.includes('CHOTRA') || usuario?.idrol.includes('SUTAR') || usuario?.idrol.includes('ADTRA')" class="sidebar-item" (click)="toggleSidebar()">
+            <a routerLink="./reporte-viajes-detallado" routerLinkActive="active" class="sidebar-link" aria-expanded="false">
+              <span>
+                <i class="icon icon-stats-bars2"></i>
+              </span>
+              <span class="hide-menu"> Reporte de viajes detallado</span>
+            </a>
           </li>
         </ul>
         <div class="unlimited-access hide-menu position-relative mb-7 text-center ">

@@ -85,11 +85,11 @@ export class ParametrosComponent {
 
   async sincronizarTablasMaestras() {
     try {
+      this.alertService.mostrarModalCarga();
       const empresas = await this.maestrasService.getEmpresas([])
       if(!!empresas && empresas.length) { 
         await this.dexieService.saveEmpresas(empresas)
         await this.ListarEmpresas()
-        this.alertService.showAlert('¡Éxito!','La operación se completó correctamente','success')
       }
       
       const fundos = this.maestrasService.getFundos([{ idempresa: this.usuario.idempresa }])
@@ -105,6 +105,8 @@ export class ParametrosComponent {
         if (!!resp.data && resp.data.length) {
           await this.dexieService.saveVehiculos(resp.data);
           await this.ListarVehiculos();
+          this.alertService.cerrarModalCarga();
+          this.alertService.showAlert('¡Éxito!','La operación se completó correctamente','success')
         }
       })
 

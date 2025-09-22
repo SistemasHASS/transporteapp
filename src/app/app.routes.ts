@@ -4,6 +4,8 @@ import { LayoutComponent } from './modules/main/pages/layout/layout.component';
 import { ParametrosComponent } from './modules/main/pages/parametros/parametros.component';
 import { AuthGuard } from './modules/auth/guard/auth.guard';
 import { ViajesComponent } from './modules/main/pages/viajes/viajes.component';
+import { ReporteViajesComponent } from './modules/main/pages/reporte-viajes/reporte-viajes.component';
+import { ReporteViajesDetalladoComponent } from './modules/main/pages/reporte-viajes-detallado/reporte-viajes-detallado.component';
 
 export const routes: Routes = [
   {
@@ -25,6 +27,8 @@ export const routes: Routes = [
     children: [
       { path: 'parametros', component: ParametrosComponent },
       { path: 'viajes', component: ViajesComponent },
+      { path: 'reporte-viajes', component: ReporteViajesComponent },
+      { path: 'reporte-viajes-detallado', component: ReporteViajesDetalladoComponent },
       { path: '**', redirectTo: 'auth/login' },
     ],
     canActivate: [AuthGuard]

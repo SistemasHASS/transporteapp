@@ -4,6 +4,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AuthService } from '@/app/modules/auth/services/auth.service';
 import { DexieService } from '@/app/shared/dixiedb/dexie-db.service';
 import { AlertService } from '@/app/shared/alertas/alerts.service';
+import { UtilsService } from '@/app/shared/utils/utils.service';
 
 @Component({
   selector: 'app-login',
@@ -26,7 +27,8 @@ export class LoginComponent {
     private fb: FormBuilder,
     private dexieService: DexieService,
     private alertService: AlertService,
-    private authService: AuthService
+    private authService: AuthService,
+    private utilsService: UtilsService
   ) {
     this.loginForm = this.fb.group({
       usuario: ['', [Validators.required]],  // Campo requerido
@@ -59,8 +61,8 @@ export class LoginComponent {
           if (resp > 1) {
             this.mensajeLogin = 'El usuario cuenta con más de una cuenta, comuníquese con su administrador del servicio.';
           } else {
-            console.log('resp: ',resp);
             await this.dexieService.saveUsuario(resp[0]);
+            this.recuperarViajes(resp[0]);
             this.login();
           }
           this.isCharge = false;
@@ -73,6 +75,21 @@ export class LoginComponent {
         this.mensajeLogin = 'Hubo un error en el login, por favor intente nuevamente.';
         this.alertService.showAlert('error', this.mensajeLogin.toString(), 'error')
       }
+    }
+  }
+
+  async recuperarViajes(usuario: any) {
+    console.log('usu: ',usuario);
+    const formato = [
+			{
+				ruc: usuario.ruc,
+				fecha: this.utilsService.formatoAnioMesDia(),
+				conductor: usuario.documentoidentidad
+			}
+		]
+    const viajes = await this.authService.getRecuperarViajes(formato);
+    if (!!viajes && viajes.length > 0) {
+      await this.dexieService.saveViajes(viajes);
     }
   }
 

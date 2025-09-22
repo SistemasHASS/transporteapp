@@ -32,6 +32,11 @@ export class AuthService {
     }
   }
 
+  async getRecuperarViajes(body: any){
+    const url = `${this.baseUrl}/transporte/viajes/recuperar-viajes`;
+    return await lastValueFrom(this.http.post<any>(url, body));
+  }
+
   async isLoggedIn(){
     const user = await this.dexieService.showUsuario();
     return !!user
