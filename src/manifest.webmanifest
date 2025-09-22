@@ -1,6 +1,6 @@
 {
-  "name": "admision",
-  "short_name": "admision",
+  "name": "TransporteApp",
+  "short_name": "TransporteApp",
   "theme_color": "#1976d2",
   "background_color": "#fafafa",
   "display": "standalone",

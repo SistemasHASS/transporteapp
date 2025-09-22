@@ -75,7 +75,7 @@ export class ViajesComponent {
   localidades: any[] = [];
   dni: string = '';
   trabajadoresActivos: any[] = [];
-
+  puntos: any[] = [];
 
   constructor(private dixiService: DexieService, 
     private alertService: AlertService, 
@@ -91,6 +91,7 @@ export class ViajesComponent {
   }
 
   async ngOnInit() {
+    this.puntos = await this.dixiService.showLocalidades();
     this.getUsuario();
     this.getConfiguracion();
     this.getVehiculos();
@@ -439,6 +440,11 @@ export class ViajesComponent {
       this.dixiService.updateEliminadoViaje(viaje.idviaje,1);
       this.ListarViajes();
     }
+  }
+
+  obtenerPunto(idpunto: string): string {
+    const punto = this.puntos.find((p: any) => p.id === idpunto);
+    return punto ? punto.nombre : 'Punto no encontrado';
   }
   
 }

@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "admision": {
+    "transporteapp": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -17,7 +17,7 @@
         "build": {
           "builder": "@angular/build:application",
           "options": {
-            "outputPath": "dist/admision",
+            "outputPath": "dist/transporteapp",
             "index": "src/index.html",
             "browser": "src/main.ts",
             "polyfills": [
@@ -49,12 +49,12 @@
                 {
                   "type": "initial",
                   "maximumWarning": "500kb",
-                  "maximumError": "4mb"
+                  "maximumError": "6mb"
                 },
                 {
                   "type": "anyComponentStyle",
                   "maximumWarning": "2kb",
-                  "maximumError": "4kb"
+                  "maximumError": "6mb"
                 }
               ],
               "outputHashing": "all",
@@ -72,10 +72,10 @@
           "builder": "@angular/build:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "admision:build:production"
+              "buildTarget": "transporteapp:build:production"
             },
             "development": {
-              "buildTarget": "admision:build:development"
+              "buildTarget": "transporteapp:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -83,7 +83,7 @@
         "extract-i18n": {
           "builder": "@angular/build:extract-i18n",
           "options": {
-            "buildTarget": "admision:build"
+            "buildTarget": "transporteapp:build"
           }
         },
         "test": {

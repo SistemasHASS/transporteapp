@@ -56,22 +56,20 @@
                   <th>Punto Inicio</th>
                   <th>Punto Fin</th>
                   <th>Cantidad</th>
-                  <th>Fecha Registro</th>
                 </tr>
               </thead>
               <tbody>
                 <tr *ngFor="let row of data; let i = index">
                   <td class="text-center">{{ i + 1 }}</td>
-                  <td class="text-center">{{ row.fecha }}</td>
+                  <td class="text-center">{{ row.fecharegistro }}</td>
                   <td class="text-center">{{ row.ruc }}</td>
                   <td class="text-center">{{ row.DNI_conductor }}</td>
                   <td>{{ row.conductor }}</td>
-                  <td class="text-center">{{ row.placa_in }}</td>
-                  <td class="text-center">{{ row.horario_in }}</td>
+                  <td class="text-center">{{ row.placa }}</td>
+                  <td class="text-center">{{ row.horario }}</td>
                   <td class="text-center">{{ row.puntoinicio }}</td>
                   <td class="text-center">{{ row.puntofin }}</td>
-                  <td class="text-center">{{ row.cantidad_in }}</td>
-                  <td class="text-center">{{ row.fecharegistro | date:'short' }}</td>
+                  <td class="text-center">{{ row.cantidad }}</td>
                 </tr>
               </tbody>
             </table>

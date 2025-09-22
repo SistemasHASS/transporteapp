@@ -20,6 +20,8 @@
                 class="tabla-viajes p-datatable-sm p-datatable-striped table-compact"
                 [selectionMode]="'single'" [(selection)]="selectedViajes"
                 (onRowSelect)="onRowSelect($event)">
+
+                <!-- Cabecera -->
                 <ng-template pTemplate="header">
                     <tr class="table-primary">
                         <th style="text-align: center;">#</th>
@@ -34,42 +36,59 @@
                         <th style="text-align: center;">Eliminar</th>
                     </tr>
                 </ng-template>
+
+                <!-- Cuerpo -->
                 <ng-template pTemplate="body" let-row let-i="rowIndex">
-                    <tr [ngClass]="{
+                    <!-- Fila 1: Punto inicio y fin -->
+                    <tr class="table-info" 
+                    [ngClass]="{
                         'fondo-rojo': row.estado === 0 && row.eliminado !== 1,
                         'fondo-verde': row.estado === 1 && row.eliminado !== 1,
                         'fila-eliminada': row.eliminado === 1
-                      }">
+                    }">
+                        <td colspan="8" style="text-align: left; font-weight: bold;">
+                            {{ obtenerPunto(row.idpuntoinicio) }} → {{ obtenerPunto(row.idpuntofin) }}
+                        </td>
+                    </tr>
+
+                    <!-- Fila 2: resto de propiedades -->
+                    <tr [ngClass]="{
+                            'fondo-rojo': row.estado === 0 && row.eliminado !== 1,
+                            'fondo-verde': row.estado === 1 && row.eliminado !== 1,
+                            'fila-eliminada': row.eliminado === 1
+                        }">
                         <td style="text-align: center;">{{ i + 1 }}</td>
                         <td>
                             <p-tableCheckbox [disabled]="row.eliminado === 1" [value]="row"></p-tableCheckbox>
                         </td>
                         <td style="text-align: center;">
-                            <button class="btn btn-warning btn-sm" style="border: 1px solid #b6b6b6" (click)="editarViaje(row)"
-                            [disabled]="row.eliminado === 1">
+                            <button class="btn btn-warning btn-sm" style="border: 1px solid #b6b6b6"
+                                (click)="editarViaje(row)" [disabled]="row.eliminado === 1">
                                 <i class="icon icon-pencil"></i>
                             </button>
                         </td>
                         <td style="text-align: center;">{{ formatoHora(row.fecharegistro) }}</td>
                         <td style="text-align: center;">{{ row.horario }}</td>
-                        <!-- <td style="text-align: center;">{{ row.grupo?'V-'+row.grupo:'Libre' }}</td> -->
                         <td style="text-align: center;">
                             @if (row.grupo) {
-                              <span class="grupo-circle" [ngClass]="'grupo-' + row.grupo">
+                            <span class="grupo-circle" [ngClass]="'grupo-' + row.grupo">
                                 V-{{ row.grupo }}
-                              </span>
+                            </span>
                             } @else {
-                              <span class="grupo-circle grupo-libre">Libre</span>
+                            <span class="grupo-circle grupo-libre">Libre</span>
                             }
-                          </td>                                             
+                        </td>
                         <td style="text-align: center;">{{ row.cantidad }}</td>
                         <td style="text-align: center;">
-                            <button class="btn btn-danger btn-sm" style="border: 1px solid #b6b6b6" (click)="eliminarViaje(row)">
+                            <button class="btn btn-danger btn-sm" style="border: 1px solid #b6b6b6"
+                                (click)="eliminarViaje(row)">
                                 <i class="icon icon-trash"></i>
                             </button>
                         </td>
                     </tr>
                 </ng-template>
+
+                <!-- Mensaje vacío -->
                 <ng-template pTemplate="emptymessage">
                     <tr>
                         <td colspan="8" class="text-center">
