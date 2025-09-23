@@ -10,6 +10,7 @@ import { Modal } from 'bootstrap';
 import { UtilsService } from '@/app/shared/utils/utils.service';
 import { CheckboxModule } from 'primeng/checkbox';
 import { TransporteService } from '../../services/transporte.service';
+import QRCode from 'qrcode';
 
 @Component({
   selector: 'app-viajes',
@@ -19,12 +20,16 @@ import { TransporteService } from '../../services/transporte.service';
   styleUrl: './viajes.component.scss'
 })
 export class ViajesComponent {
+  @ViewChild('canvasQR') canvasQR!: ElementRef<HTMLCanvasElement>;
 
   @ViewChild('modalViaje') modalViaje!: ElementRef;
   modalViajeInstance!: Modal;
 
   @ViewChild('modalCantidad') modalCantidad!: ElementRef;
   modalCantidadInstance!: Modal;
+
+  @ViewChild('modalQR') modalQR!: ElementRef;
+  modalQRInstance!: Modal;
   
   viajes: any[] = [];
   selectedViajes: any[] = [];
@@ -76,6 +81,7 @@ export class ViajesComponent {
   dni: string = '';
   trabajadoresActivos: any[] = [];
   puntos: any[] = [];
+  mostrarModalQR: boolean = false;
 
   constructor(private dixiService: DexieService, 
     private alertService: AlertService, 
@@ -88,6 +94,7 @@ export class ViajesComponent {
   ngAfterViewInit(): void {
     this.modalViajeInstance = new Modal(this.modalViaje.nativeElement);
     this.modalCantidadInstance = new Modal(this.modalCantidad.nativeElement);
+    this.modalQRInstance = new Modal(this.modalQR.nativeElement);
   }
 
   async ngOnInit() {
@@ -445,6 +452,27 @@ export class ViajesComponent {
   obtenerPunto(idpunto: string): string {
     const punto = this.puntos.find((p: any) => p.id === idpunto);
     return punto ? punto.nombre : 'Punto no encontrado';
+  }
+
+  async generarQRIdViaje(texto: string) {
+    console.log('texto: ',texto);
+    if (this.canvasQR) {
+      QRCode.toCanvas(this.canvasQR.nativeElement, texto, {
+        width: 150
+      }, (error) => {
+        if (error) console.error(error);
+      });
+    }
+  }
+
+  abrirModalQR(texto: string) {
+    console.log('texto: ',texto);
+    this.modalQRInstance.show();
+    setTimeout(() => this.generarQRIdViaje(texto), 0); // Espera a que se renderice el canvas
+  }
+
+  cerrarModalQR() {
+    this.modalQRInstance.hide();
   }
   
 }

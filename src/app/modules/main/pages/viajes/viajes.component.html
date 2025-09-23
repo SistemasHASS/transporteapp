@@ -41,12 +41,18 @@
                 <ng-template pTemplate="body" let-row let-i="rowIndex">
                     <!-- Fila 1: Punto inicio y fin -->
                     <tr class="table-info" 
-                    [ngClass]="{
-                        'fondo-rojo': row.estado === 0 && row.eliminado !== 1,
-                        'fondo-verde': row.estado === 1 && row.eliminado !== 1,
-                        'fila-eliminada': row.eliminado === 1
-                    }">
-                        <td colspan="8" style="text-align: left; font-weight: bold;">
+                        [ngClass]="{
+                            'fondo-rojo': row.estado === 0 && row.eliminado !== 1,
+                            'fondo-verde': row.estado === 1 && row.eliminado !== 1,
+                            'fila-eliminada': row.eliminado === 1
+                        }">
+                        <td colspan="2" style="text-align: center;">
+                            <button class="btn btn-info btn-sm"
+                                (click)="abrirModalQR(row.idviaje)">
+                                <i class="icon icon-qrcode"></i> QR
+                            </button>
+                        </td>
+                        <td colspan="6" style="text-align: left; font-weight: bold;">
                             {{ obtenerPunto(row.idpuntoinicio) }} → {{ obtenerPunto(row.idpuntofin) }}
                         </td>
                     </tr>
@@ -57,19 +63,19 @@
                             'fondo-verde': row.estado === 1 && row.eliminado !== 1,
                             'fila-eliminada': row.eliminado === 1
                         }">
-                        <td style="text-align: center;">{{ i + 1 }}</td>
-                        <td>
+                        <td style="text-align: center; border-bottom: 1px solid black;">{{ i + 1 }}</td>
+                        <td style="text-align: center; border-bottom: 1px solid black;">
                             <p-tableCheckbox [disabled]="row.eliminado === 1" [value]="row"></p-tableCheckbox>
                         </td>
-                        <td style="text-align: center;">
+                        <td style="text-align: center; border-bottom: 1px solid black;">
                             <button class="btn btn-warning btn-sm" style="border: 1px solid #b6b6b6"
                                 (click)="editarViaje(row)" [disabled]="row.eliminado === 1">
                                 <i class="icon icon-pencil"></i>
                             </button>
                         </td>
-                        <td style="text-align: center;">{{ formatoHora(row.fecharegistro) }}</td>
-                        <td style="text-align: center;">{{ row.horario }}</td>
-                        <td style="text-align: center;">
+                        <td style="text-align: center; border-bottom: 1px solid black;">{{ formatoHora(row.fecharegistro) }}</td>
+                        <td style="text-align: center; border-bottom: 1px solid black;">{{ row.horario }}</td>
+                        <td style="text-align: center; border-bottom: 1px solid black;">
                             @if (row.grupo) {
                             <span class="grupo-circle" [ngClass]="'grupo-' + row.grupo">
                                 V-{{ row.grupo }}
@@ -78,8 +84,8 @@
                             <span class="grupo-circle grupo-libre">Libre</span>
                             }
                         </td>
-                        <td style="text-align: center;">{{ row.cantidad }}</td>
-                        <td style="text-align: center;">
+                        <td style="text-align: center; border-bottom: 1px solid black;">{{ row.cantidad }}</td>
+                        <td style="text-align: center; border-bottom: 1px solid black;">
                             <button class="btn btn-danger btn-sm" style="border: 1px solid #b6b6b6"
                                 (click)="eliminarViaje(row)">
                                 <i class="icon icon-trash"></i>
@@ -273,4 +279,22 @@
         </div>
     </div>
 </div>
+<div class="modal" #modalQR>
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"><i class="icon-file-text mr-2"></i> QR de viaje</h5>
+            </div>
+            <div class="modal-body d-flex justify-content-center">
+                <canvas #canvasQR></canvas>
+            </div>
+            <div class="modal-footer">
+                <button (click)="cerrarModalQR()" type="button" class="btn btn-link" data-dismiss="modal">
+                    Cerrar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
 
