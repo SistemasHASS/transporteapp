@@ -16,6 +16,7 @@ export class DexieService extends Dexie {
   public localidades!: Dexie.Table<Localidades, string>;
   public trabajadores!: Dexie.Table<Trabajador, string>;
   public viajes!: Dexie.Table<Viaje, string>;
+  public viajesAprobados!: Dexie.Table<Viaje, string>;
   
   constructor() {
     super('Transporte');
@@ -33,7 +34,8 @@ export class DexieService extends Dexie {
       empresas: `id,idempresa,ruc,razonsocial,empresa`,
       localidades: `id,idempresa,codigo,nombre,descripcion,estado,index,empresaNombre,fechaRegistro`,
       trabajadores: `id,nombres,apellidopaterno,apellidomaterno,estado,index,empresaNombre,fechaRegistro`,
-      viajes: `idviaje,fechahoraactual,horario,idempresa,idfundo,placa,capacidad,idpuntoinicio,idpuntofin,trabajadores`,
+      viajes: `idviaje,ruc,conductor,fecharegistro,horario,idempresa,idfundo,placa,capacidad,cantidad,idpuntoinicio,idpuntofin,trabajadores,eliminado,cerrado,grupo,estado,aprobado`,
+      viajesAprobados: `idviaje,ruc,conductor,fecharegistro,horario,idempresa,idfundo,placa,capacidad,cantidad,idpuntoinicio,idpuntofin,trabajadores,eliminado,cerrado,grupo,estado,aprobado`,
     });
 
     this.usuarios = this.table('usuarios');
@@ -45,6 +47,7 @@ export class DexieService extends Dexie {
     this.localidades = this.table('localidades');
     this.trabajadores = this.table('trabajadores');
     this.viajes = this.table('viajes');
+    this.viajesAprobados = this.table('viajesAprobados');
   }
 
   async saveUsuario(usuario: Usuario) {await this.usuarios.put(usuario);}
@@ -97,10 +100,19 @@ export class DexieService extends Dexie {
   async saveViaje(viaje: Viaje) {await this.viajes.put(viaje);}
   async saveViajes(viajes: Viaje[]) {await this.viajes.bulkPut(viajes);}
   async showViajes() {return await this.viajes.toArray();}
-  async showViajeById(id: string) {return await this.viajes.where('id').equals(id).first()}
-  async updateViajeSincronizado(id: string, estado: number) {await this.viajes.update(id, {estado});}
-  async updateEliminadoViaje(id: string, eliminado: number) {await this.viajes.update(id, {eliminado});}
+  async showViajeById(idviaje: string) {return await this.viajes.where('idviaje').equals(idviaje).first()}
+  async updateViajeSincronizado(idviaje: string, estado: number) {await this.viajes.update(idviaje, {estado});}
+  async updateEliminadoViaje(idviaje: string, eliminado: number) {await this.viajes.update(idviaje, {eliminado});}
   async clearViajes() {await this.viajes.clear();}
+  //
+  async saveViajeAprobado(viaje: Viaje) {await this.viajesAprobados.put(viaje);}
+  async saveViajesAprobados(viajes: Viaje[]) {await this.viajesAprobados.bulkPut(viajes);}
+  async showViajesAprobados() {return await this.viajesAprobados.toArray();}
+  async showViajeAprobadoById(idviaje: string) {return await this.viajesAprobados.where('idviaje').equals(idviaje).first()}
+  async updateViajeAprobadoSincronizado(idviaje: string, estado: number) {await this.viajesAprobados.update(idviaje, {estado});}
+  async updateEliminadoViajeAprobado(idviaje: string, eliminado: number) {await this.viajesAprobados.update(idviaje, {eliminado});}
+  async updateAprobadoViajeAprobado(idviaje: string, aprobado: number) {await this.viajesAprobados.update(idviaje, {aprobado});}
+  async clearViajesAprobados() {await this.viajesAprobados.clear();}
   //
   async clearMaestras() {
     await this.clearFundos();

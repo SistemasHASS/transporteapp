@@ -1,1 +1,119 @@
-<p>aprobaciones-viajes works!</p>
+<div class="card">
+    <div class="card-header text-center">
+        <button (click)="openApp()" class="btn totalAncho bg-primary text-white">
+            Leer QR viaje <i class="icon icon-camera"></i>
+        </button>
+    </div>
+</div>
+<div class="card p-2">
+    <div class="card-body p-0">
+        <div class="table-content p-0">
+            <div style="max-height: calc(50vh + 80px); overflow-y: auto; overflow-x: auto;">
+                <p-table #dt [value]="viajes" [paginator]="true" [rows]="10"
+                    responsiveLayout="scroll" [scrollable]="true"
+                    class="tabla-viajes p-datatable-sm p-datatable-striped table-compact"
+                    [selectionMode]="'single'" [(selection)]="selectedViajes"
+                    (onRowSelect)="onRowSelect($event)">
+    
+                    <!-- Cabecera -->
+                    <ng-template pTemplate="header">
+                        <tr class="table-primary">
+                            <th style="text-align: center;">#</th>
+                            <th style="text-align: center;">
+                                <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+                            </th>
+                            <th style="text-align: center;">Hora</th>
+                            <th style="text-align: center;">Turno</th>
+                            <th style="text-align: center;">Grupo</th>
+                            <th style="text-align: center;">#Per.</th>
+                        </tr>
+                    </ng-template>
+    
+                    <!-- Cuerpo -->
+                    <ng-template pTemplate="body" let-row let-i="rowIndex">
+                        <tr class="table-info" 
+                            [ngClass]="{
+                                'fondo-rojo': row.estado === 0 && row.eliminado !== 1,
+                                'fondo-verde': row.estado === 1 && row.eliminado !== 1,
+                                'fila-eliminada': row.eliminado === 1
+                            }">
+                            <td colspan="2" style="text-align: center;">
+                                <span class="grupo-circle-aprobado" [ngClass]="{
+                                    'bg-danger': row.aprobado === 0,
+                                    'bg-success': row.aprobado === 1
+                                }"
+                                >{{ row.aprobado?'Aprobado':'Sin aprobar' }}</span>
+                            </td>
+                            <td colspan="6" style="text-align: left; font-weight: bold;">
+                                <span style="font-size: 11px;">{{ row.nombreconductor }}</span><br>
+                                {{ row.puntoinicio }} → {{ row.puntofin }}
+                            </td>
+                        </tr>
+                        <tr [ngClass]="{
+                                'fondo-rojo': row.estado === 0 && row.eliminado !== 1,
+                                'fondo-verde': row.estado === 1 && row.eliminado !== 1,
+                                'fila-eliminada': row.eliminado === 1
+                            }">
+                            <td style="text-align: center; border-bottom: 1px solid black;">{{ i + 1 }}</td>
+                            <td style="text-align: center; border-bottom: 1px solid black;">
+                                <p-tableCheckbox [disabled]="row.eliminado === 1" [value]="row"></p-tableCheckbox>
+                            </td>
+                            <td style="text-align: center; border-bottom: 1px solid black;">{{ formatoHora(row.fecharegistro) }}</td>
+                            <td style="text-align: center; border-bottom: 1px solid black;">{{ row.horario }}</td>
+                            <td style="text-align: center; border-bottom: 1px solid black;">
+                                @if (row.grupo) {
+                                    <span>V-{{ row.grupo }}</span>
+                                } @else {
+                                    <span>Libre</span>
+                                }
+                            </td>
+                            <td style="text-align: center; border-bottom: 1px solid black;">{{ row.cantidad }}</td>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="emptymessage">
+                        <tr>
+                            <td colspan="8" class="text-center">
+                                No hay viajes disponibles
+                            </td>
+                        </tr>
+                    </ng-template>
+                </p-table>
+            </div>
+        </div>    
+    </div>
+    <div class="card cardbuttons">
+        <div class="text-center d-flex justify-content-center gap-2 mb-3">
+            <button class="btn-botomm-principal btn btn-primary text-white" (click)="sincronizarViajes()">
+                Sincronizar <i class="icon icon-sync"></i> </button>
+            <button class="btn-botomm-principal btn btn-success text-white" (click)="aprobarViaje()">
+                Aprobar <i class="icon icon-check"></i> </button>
+        </div>
+    </div>
+</div>
+<!-- Modal camara -->
+<div class="modal" #camaraPlanilla>
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"><i class="icon-file-text mr-2"></i>Lectura de codigo</h5>
+            </div>
+            <div class="modal-body">
+                <zxing-scanner *ngIf="enableScanner"
+                    [device]="currentDevice" 
+                    [formats]="formatsEnabled"
+                    (scanSuccess)="onCodeResult($event)"
+                    (camerasFound)="onCamerasFound($event)"
+                    (camerasNotFound)="onCamerasNotFound()"
+                    (scanError)="onScanError($event)">
+                </zxing-scanner>
+            </div>
+            <div class="modal-footer">
+                <button (click)="closeModalCamara()" type="button" class="btn btn-link" data-dismiss="modal">
+                    Cancelar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+  
+  

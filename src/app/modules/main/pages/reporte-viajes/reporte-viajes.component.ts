@@ -209,24 +209,26 @@ export class ReporteViajesComponent {
       }
     };
   
-    pdfMake.createPdf(docDefinition).download('reporte.pdf');
+    pdfMake.createPdf(docDefinition).open();
   }
 
   exportarExcel(): void {
-    const nombreArchivo = `reporte_viajes_${new Date().toISOString().slice(0,10)}.xlsx`;
+      const nombreArchivo = `reporte_detallado_${new Date().toISOString().slice(0,10)}.xlsx`;
+      
+      // convierte data a hoja de Excel
+      const ws: XLSX.WorkSheet = XLSX.utils.json_to_sheet(this.data);
     
-    // convierte data a hoja de Excel
-    const ws: XLSX.WorkSheet = XLSX.utils.json_to_sheet(this.data);
-  
-    // crea libro y agrega hoja
-    const wb: XLSX.WorkBook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, 'Reporte');
-  
-    // genera buffer
-    const excelBuffer: any = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
-  
-    // guarda el archivo
-    const blob = new Blob([excelBuffer], { type: 'application/octet-stream' });
-    FileSaver.saveAs(blob, nombreArchivo);
-  }
+      // crea libro y agrega hoja
+      const wb: XLSX.WorkBook = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, 'Reporte');
+    
+      // genera Excel en base64
+      const excelBase64 = XLSX.write(wb, { bookType: 'xlsx', type: 'base64' });
+    
+      // crea un Data URI
+      const dataUri = "data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64," + excelBase64;
+    
+      // 👇 en WebView Android esto abre el Excel en otra app
+      window.open(dataUri, "_blank");
+    }
 }

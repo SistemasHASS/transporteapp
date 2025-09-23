@@ -1,0 +1,113 @@
+.tabla-trabajadores {
+    max-height: 200px;
+    font-size: 8px;
+    font-weight: bold;
+  }
+  
+  .tabla-trabajadores table th,
+  .tabla-trabajadores table td {
+    padding: 2px 4px !important;
+    vertical-align: middle;
+  }
+  
+  .tabla-trabajadores .nombre {
+    white-space: normal !important;
+    word-break: break-word;
+  }
+    
+  .table-compact .p-datatable-thead > tr > th,
+  .table-compact .p-datatable-tbody > tr > td {
+    font-size: 10px;       /* letra más pequeñita */
+    padding: 2px 6px;      /* menos espacio en celdas */
+    line-height: 1.2;      /* filas más apretadas */
+    text-align: center;
+  }
+  
+  .table-compact .p-datatable-thead > tr > th {
+    font-weight: 600;      /* encabezado negrita */
+  }
+  
+  .btn-botomm-principal {
+    min-width: 140px;
+  }
+  // :host ::ng-deep .tabla-viajes .p-datatable-thead > tr {
+  //   background-color: #0d6efd; /* azul bootstrap */
+  //   color: #fff;
+  // }
+  
+  // :host ::ng-deep .tabla-viajes .p-datatable-thead > tr > th {
+  //   text-align: center;
+  //   font-weight: 600;
+  //   font-size: 12px;
+  // }
+  .fondo-rojo {
+    background-color: #f8d7da !important;
+    color: black !important;
+  }
+  
+  .fondo-verde {
+    background-color: #d4edda !important;
+    color: black !important;
+  }
+  .fila-eliminada {
+    background-color: tomato !important; /* rojo clarito */
+    text-decoration: line-through;        /* tachado */
+    color: #b71c1c !important;            /* texto rojo fuerte */
+  }
+  
+  .fila-eliminada .btn {
+    background-color: tomato !important; /* rojo clarito */
+    text-decoration: line-through;        /* tachado */
+    color: #b71c1c !important;            /* texto rojo fuerte */
+  }
+  
+  .grupo-circle {
+    display: inline-block;
+    min-width: 35px;
+    height: 25px;
+    line-height: 25px;
+    border-radius: 5px;
+    text-align: center;
+    font-size: 10px;
+    font-weight: bold;
+    color: white;
+  }
+
+  .grupo-circle-aprobado {
+    display: inline-block;
+    min-width: 70px;
+    height: 25px;
+    line-height: 25px;
+    border-radius: 5px;
+    text-align: center;
+    font-size: 10px;
+    font-weight: bold;
+    color: white;
+  }
+  
+  .grupo-1  { background-color: #007bff; } /* Azul */
+  .grupo-2  { background-color: #28a745; } /* Verde */
+  .grupo-3  { background-color: #ffc107; color: #212529; } /* Amarillo */
+  .grupo-4  { background-color: #6f42c1; } /* Morado */
+  .grupo-5  { background-color: #e83e8c; } /* Rosado */
+  .grupo-6  { background-color: #20c997; } /* Verde agua */
+  .grupo-7  { background-color: #fd7e14; } /* Naranja */
+  .grupo-8  { background-color: #6610f2; } /* Violeta intenso */
+  .grupo-9  { background-color: #17a2b8; } /* Celeste */
+  .grupo-10 { background-color: #6c757d; } /* Gris oscuro */
+  .grupo-11 { background-color: #198754; } /* Verde fuerte */
+  .grupo-12 { background-color: #d63384; } /* Fucsia */
+  .grupo-13 { background-color: #0dcaf0; color: #212529; } /* Celeste claro */
+  .grupo-14 { background-color: #fdc107; color: #212529; } /* Amarillo fuerte */
+  .grupo-15 { background-color: #495057; } /* Gris carbón */
+  .grupo-16 { background-color: #ff5733; } /* Rojo anaranjado */
+  .grupo-17 { background-color: #9c27b0; } /* Púrpura */
+  .grupo-18 { background-color: #00bcd4; } /* Turquesa */
+  .grupo-19 { background-color: #8bc34a; color: #212529; } /* Verde lima */
+  .grupo-20 { background-color: #ff9800; } /* Naranja fuerte */
+  
+  .grupo-libre {
+    background-color: #dc3545; /* Rojo */
+  }
+  
+  

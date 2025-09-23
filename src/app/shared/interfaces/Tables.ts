@@ -91,6 +91,7 @@ export interface Viaje {
     cerrado: number;
     grupo: number;
     estado: number;
+    aprobado: number;
 }
 
 export interface Pasajero {

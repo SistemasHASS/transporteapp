@@ -208,7 +208,8 @@ data : any = [];
       }
     };
   
-    pdfMake.createPdf(docDefinition).download('reporte.pdf');
+    pdfMake.createPdf(docDefinition).open();
+
   }
 
   exportarExcel(): void {
@@ -219,13 +220,16 @@ data : any = [];
   
     // crea libro y agrega hoja
     const wb: XLSX.WorkBook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, 'Reporte');
+    XLSX.utils.book_append_sheet(wb, ws, 'ReporteDetallado');
   
-    // genera buffer
-    const excelBuffer: any = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
+    // genera Excel en base64
+    const excelBase64 = XLSX.write(wb, { bookType: 'xlsx', type: 'base64' });
   
-    // guarda el archivo
-    const blob = new Blob([excelBuffer], { type: 'application/octet-stream' });
-    FileSaver.saveAs(blob, nombreArchivo);
+    // crea un Data URI
+    const dataUri = "data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64," + excelBase64;
+  
+    // 👇 en WebView Android esto abre el Excel en otra app
+    window.open(dataUri, "_blank");
   }
+  
 }

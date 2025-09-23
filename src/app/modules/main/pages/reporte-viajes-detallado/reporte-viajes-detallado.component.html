@@ -16,71 +16,71 @@
     </div>
 </div>
 <div class="card">
-    <div class="card-body">
-      <ul class="nav nav-tabs" role="tablist">
-        <li class="nav-item tablaEsconder">
-          <a class="nav-link"
-             style="margin-right: 0;"
-             [class.active]="activeTab === 'home'"
-             (click)="setActiveTab('home')"
-             role="tab">
-            Reportes de rendimiento
-          </a>
-        </li>
-      </ul>
-  
-      <!-- Botón para exportar -->
-      <div *ngIf="data.length > 0" class="mb-2 text-end mt-4">
-        <button class="btn btn-sm btn-success mr-2" (click)="exportarExcel()">
-            <i class="icon icon-file-excel"></i> Excel
-        </button>
-        <button class="btn btn-sm btn-danger" (click)="exportarPDF()">
-            <i class="icon icon-file-pdf"></i> PDF
-        </button>
-      </div>
-  
-      <div class="row tablaEsconder" *ngIf="data.length > 0">
-        <div class="col-md-12">
-          <!-- scroll horizontal -->
-          <div class="table-responsive tabla-scroll">
-            <table class="table table-bordered table-striped table-sm tabla-compacta">
-              <thead style="position: sticky; top: 0; z-index: 1; background-color: white;">
-                <tr class="bg-primary text-white text-center">
-                  <th>#</th>
-                  <th>Fecha</th>
-                  <th>RUC</th>
-                  <th>DNI Conductor</th>
-                  <th>Conductor</th>
-                  <th>DNI pasajero</th>
-                  <th>Pasajero</th>
-                  <th>Placa</th>
-                  <th>Horario</th>
-                  <th>Punto Inicio</th>
-                  <th>Punto Fin</th>
-                  <th>Cantidad</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr *ngFor="let row of data; let i = index">
-                  <td class="text-center">{{ i + 1 }}</td>
-                  <td class="text-center">{{ row.fecharegistro }}</td>
-                  <td class="text-center">{{ row.ruc }}</td>
-                  <td class="text-center">{{ row.DNI_conductor }}</td>
-                  <td>{{ row.conductor }}</td>
-                  <td class="text-center">{{ row.DNI_pasajero }}</td>
-                  <td>{{ row.pasajero }}</td>
-                  <td class="text-center">{{ row.placa }}</td>
-                  <td class="text-center">{{ row.horario }}</td>
-                  <td class="text-center">{{ row.puntoinicio }}</td>
-                  <td class="text-center">{{ row.puntofin }}</td>
-                  <td class="text-center">{{ row.cantidad }}</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>          
+  <div class="card-body">
+    <ul class="nav nav-tabs" role="tablist">
+      <li class="nav-item tablaEsconder">
+        <a class="nav-link"
+            style="margin-right: 0;"
+            [class.active]="activeTab === 'home'"
+            (click)="setActiveTab('home')"
+            role="tab">
+          Reportes de rendimiento
+        </a>
+      </li>
+    </ul>
+
+    <!-- Botón para exportar -->
+    <div *ngIf="data.length > 0" class="mb-2 mt-4 d-flex justify-content-end gap-2">
+      <button class="btn btn-sm btn-success" (click)="exportarExcel()">
+          <i class="icon icon-file-excel"></i> Excel
+      </button>
+      <button class="btn btn-sm btn-danger" (click)="exportarPDF()">
+          <i class="icon icon-file-pdf"></i> PDF
+      </button>
     </div>
+
+    <div class="row tablaEsconder" *ngIf="data.length > 0">
+      <div class="col-md-12">
+        <!-- scroll horizontal -->
+        <div class="table-responsive tabla-scroll">
+          <table class="table table-bordered table-striped table-sm tabla-compacta">
+            <thead style="position: sticky; top: 0; z-index: 1; background-color: white;">
+              <tr class="bg-primary text-white text-center">
+                <th>#</th>
+                <th>Fecha</th>
+                <th>RUC</th>
+                <th>DNI Conductor</th>
+                <th>Conductor</th>
+                <th>DNI pasajero</th>
+                <th>Pasajero</th>
+                <th>Placa</th>
+                <th>Horario</th>
+                <th>Punto Inicio</th>
+                <th>Punto Fin</th>
+                <th>Cantidad</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let row of data; let i = index">
+                <td class="text-center">{{ i + 1 }}</td>
+                <td class="text-center">{{ row.fecharegistro }}</td>
+                <td class="text-center">{{ row.ruc }}</td>
+                <td class="text-center">{{ row.DNI_conductor }}</td>
+                <td>{{ row.conductor }}</td>
+                <td class="text-center">{{ row.DNI_pasajero?row.DNI_pasajero:'-' }}</td>
+                <td>{{ row.pasajero?row.pasajero:'-' }}</td>
+                <td class="text-center">{{ row.placa }}</td>
+                <td class="text-center">{{ row.horario }}</td>
+                <td class="text-center">{{ row.puntoinicio }}</td>
+                <td class="text-center">{{ row.puntofin }}</td>
+                <td class="text-center">{{ row.cantidad }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>          
+  </div>
 </div>
   
   
