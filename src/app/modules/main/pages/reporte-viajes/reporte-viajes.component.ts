@@ -213,22 +213,16 @@ export class ReporteViajesComponent {
   }
 
   exportarExcel(): void {
+    try {
       const nombreArchivo = `reporte_detallado_${new Date().toISOString().slice(0,10)}.xlsx`;
-      
-      // convierte data a hoja de Excel
       const ws: XLSX.WorkSheet = XLSX.utils.json_to_sheet(this.data);
-    
-      // crea libro y agrega hoja
       const wb: XLSX.WorkBook = XLSX.utils.book_new();
-      XLSX.utils.book_append_sheet(wb, ws, 'Reporte');
-    
-      // genera Excel en base64
+      XLSX.utils.book_append_sheet(wb, ws, nombreArchivo);
       const excelBase64 = XLSX.write(wb, { bookType: 'xlsx', type: 'base64' });
-    
-      // crea un Data URI
       const dataUri = "data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64," + excelBase64;
-    
-      // 👇 en WebView Android esto abre el Excel en otra app
       window.open(dataUri, "_blank");
+    } catch (error) {
+      this.alertService.showAlert('Importante!', 'No existe herramienta para excel', 'info');
     }
+  }
 }

@@ -213,23 +213,17 @@ data : any = [];
   }
 
   exportarExcel(): void {
-    const nombreArchivo = `reporte_detallado_${new Date().toISOString().slice(0,10)}.xlsx`;
-    
-    // convierte data a hoja de Excel
-    const ws: XLSX.WorkSheet = XLSX.utils.json_to_sheet(this.data);
-  
-    // crea libro y agrega hoja
-    const wb: XLSX.WorkBook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, 'ReporteDetallado');
-  
-    // genera Excel en base64
-    const excelBase64 = XLSX.write(wb, { bookType: 'xlsx', type: 'base64' });
-  
-    // crea un Data URI
-    const dataUri = "data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64," + excelBase64;
-  
-    // 👇 en WebView Android esto abre el Excel en otra app
-    window.open(dataUri, "_blank");
+    try {
+      const nombreArchivo = `reporte_detallado_${new Date().toISOString().slice(0,10)}.xlsx`;
+      const ws: XLSX.WorkSheet = XLSX.utils.json_to_sheet(this.data);
+      const wb: XLSX.WorkBook = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, nombreArchivo);
+      const excelBase64 = XLSX.write(wb, { bookType: 'xlsx', type: 'base64' });
+      const dataUri = "data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64," + excelBase64;
+      window.open(dataUri, "_blank");
+    } catch (error) {
+      this.alertService.showAlert('Importante!', 'No existe herramienta para excel', 'info');
+    }
   }
   
 }
