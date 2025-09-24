@@ -20,6 +20,7 @@ import QRCode from 'qrcode';
   styleUrl: './viajes.component.scss'
 })
 export class ViajesComponent {
+  @ViewChild('dniInput') dniInputRef!: ElementRef<HTMLInputElement>;
   @ViewChild('canvasQR') canvasQR!: ElementRef<HTMLCanvasElement>;
 
   @ViewChild('modalViaje') modalViaje!: ElementRef;
@@ -54,7 +55,8 @@ export class ViajesComponent {
     idempresa: '',
     idfundo: '',
     placa: '',
-    capacidad: 0 
+    capacidad: 0,
+    lecturarapida: 0 
   }
   vehiculos: Vehiculos[] = [];
   showValidation: boolean = false;
@@ -77,13 +79,14 @@ export class ViajesComponent {
     grupo: 0,
     estado: 0,
     aprobado: 0,
-    usuario_registro: ''
+    usuario_aprueba: ''
   }
   localidades: any[] = [];
   dni: string = '';
   trabajadoresActivos: any[] = [];
   puntos: any[] = [];
   mostrarModalQR: boolean = false;
+  private focusIntervalId: any = null;
 
   constructor(private dixiService: DexieService, 
     private alertService: AlertService, 
@@ -179,7 +182,7 @@ export class ViajesComponent {
       grupo: 0,
       estado: 0,
       aprobado: 0,
-      usuario_registro: '' 
+      usuario_aprueba: '' 
     }
   }
 
@@ -479,4 +482,38 @@ export class ViajesComponent {
     this.modalQRInstance.hide();
   }
   
+  onLecturaRapidaChange() {
+    this.handleLecturaRapida();
+  }
+
+  handleLecturaRapida() {
+    this.dixiService.saveConfiguracion(this.configuracion);
+    if (this.configuracion.lecturarapida) {
+      this.startAutoFocus();
+    } else {
+      this.stopAutoFocus();
+    }
+  }
+
+  startAutoFocus() {
+    this.stopAutoFocus(); // previene duplicados
+
+    this.focusIntervalId = setInterval(() => {
+      const input = this.dniInputRef?.nativeElement;
+      if (input && document.activeElement !== input) {
+        input.focus();
+      }
+    }, 500); // medio segundo
+  }
+
+  stopAutoFocus() {
+    if (this.focusIntervalId) {
+      clearInterval(this.focusIntervalId);
+      this.focusIntervalId = null;
+    }
+  }
+
+  ngOnDestroy() {
+    this.stopAutoFocus();
+  }
 }

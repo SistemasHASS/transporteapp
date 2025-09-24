@@ -31,7 +31,8 @@ export class ParametrosComponent {
     idempresa: '',
     idfundo: '',
     placa: '',
-    capacidad: 0 
+    capacidad: 0,
+    lecturarapida: 0 
   }
 
   usuario: Usuario = {

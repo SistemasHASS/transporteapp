@@ -71,7 +71,7 @@ export class AprobacionesViajesComponent {
     grupo: 0,
     estado: 0,
     aprobado: 0,
-    usuario_registro: ''
+    usuario_aprueba: ''
   }
 
   fdesde: any;
@@ -108,7 +108,7 @@ export class AprobacionesViajesComponent {
       grupo: 0,
       estado: 0,
       aprobado: 0,
-      usuario_registro: ''
+      usuario_aprueba: ''
     }
   }
 
@@ -164,7 +164,7 @@ export class AprobacionesViajesComponent {
       if (this.isSoloIdViaje(viaje)) {
         const viajeRemoto = await this.reporteService.getViajeById([{idviaje: viaje.idviaje}]);
         if(viajeRemoto.length > 0) {
-          viajeRemoto[0].usuario_registro = this.usuario.usuario;
+          viajeRemoto[0].usuario_aprueba = this.usuario.usuario;
           await this.dexieService.saveViajeAprobado(viajeRemoto[0]);
         }
       }
@@ -245,9 +245,7 @@ export class AprobacionesViajesComponent {
     }
     const confirmacion = await this.alertService.showConfirm('Confirmación', '¿Está seguro de sincronizar los viajes?','warning');
     if (confirmacion) {
-      console.log('sinc: ',viajessincronizados);
       const resultado = await this.transporteService.enviarViajes(viajessincronizados)
-      console.log('resultado: ',resultado);
       if(!!resultado && resultado.length>0) {
         if (resultado[0].errorgeneral == 0) {
           for (const v of viajessincronizados) {

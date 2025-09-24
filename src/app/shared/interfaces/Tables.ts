@@ -20,6 +20,7 @@ export interface Configuracion {
     idfundo: string
     placa: string
     capacidad: number
+    lecturarapida: number
 }
 export interface Empresa {
     id: string;
@@ -92,7 +93,7 @@ export interface Viaje {
     grupo: number;
     estado: number;
     aprobado: number;
-    usuario_registro: string;
+    usuario_aprueba: string;
 }
 
 export interface Pasajero {
