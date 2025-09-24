@@ -92,6 +92,7 @@ export interface Viaje {
     grupo: number;
     estado: number;
     aprobado: number;
+    usuario_registro: string;
 }
 
 export interface Pasajero {

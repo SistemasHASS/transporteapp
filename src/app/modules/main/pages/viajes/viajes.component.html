@@ -36,10 +36,7 @@
                         <th style="text-align: center;">Eliminar</th>
                     </tr>
                 </ng-template>
-
-                <!-- Cuerpo -->
                 <ng-template pTemplate="body" let-row let-i="rowIndex">
-                    <!-- Fila 1: Punto inicio y fin -->
                     <tr class="table-info" 
                         [ngClass]="{
                             'fondo-rojo': row.estado === 0 && row.eliminado !== 1,
@@ -56,8 +53,6 @@
                             {{ obtenerPunto(row.idpuntoinicio) }} → {{ obtenerPunto(row.idpuntofin) }}
                         </td>
                     </tr>
-
-                    <!-- Fila 2: resto de propiedades -->
                     <tr [ngClass]="{
                             'fondo-rojo': row.estado === 0 && row.eliminado !== 1,
                             'fondo-verde': row.estado === 1 && row.eliminado !== 1,
@@ -93,8 +88,6 @@
                         </td>
                     </tr>
                 </ng-template>
-
-                <!-- Mensaje vacío -->
                 <ng-template pTemplate="emptymessage">
                     <tr>
                         <td colspan="8" class="text-center">

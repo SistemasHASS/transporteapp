@@ -70,8 +70,9 @@ export class AprobacionesViajesComponent {
     cerrado: 0,
     grupo: 0,
     estado: 0,
-    aprobado: 0
-}
+    aprobado: 0,
+    usuario_registro: ''
+  }
 
   fdesde: any;
   fhasta: any;
@@ -106,7 +107,8 @@ export class AprobacionesViajesComponent {
       cerrado: 0,
       grupo: 0,
       estado: 0,
-      aprobado: 0
+      aprobado: 0,
+      usuario_registro: ''
     }
   }
 
@@ -146,7 +148,6 @@ export class AprobacionesViajesComponent {
 
   async onCodeResult(result: any ='') {
     this.searchTerm = result;
-    console.log('codigo escaneado: ',this.searchTerm);
     this.closeModalCamara()
     if(!!this.searchTerm) {
       this.clearViaje();
@@ -163,12 +164,12 @@ export class AprobacionesViajesComponent {
       if (this.isSoloIdViaje(viaje)) {
         const viajeRemoto = await this.reporteService.getViajeById([{idviaje: viaje.idviaje}]);
         if(viajeRemoto.length > 0) {
+          viajeRemoto[0].usuario_registro = this.usuario.usuario;
           await this.dexieService.saveViajeAprobado(viajeRemoto[0]);
         }
       }
     }
   }
-  
 
   private isSoloIdViaje(viaje: any): boolean {
     if (!viaje.idviaje) {

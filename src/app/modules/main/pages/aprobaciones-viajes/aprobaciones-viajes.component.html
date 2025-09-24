@@ -14,8 +14,6 @@
                     class="tabla-viajes p-datatable-sm p-datatable-striped table-compact"
                     [selectionMode]="'single'" [(selection)]="selectedViajes"
                     (onRowSelect)="onRowSelect($event)">
-    
-                    <!-- Cabecera -->
                     <ng-template pTemplate="header">
                         <tr class="table-primary">
                             <th style="text-align: center;">#</th>
@@ -28,8 +26,6 @@
                             <th style="text-align: center;">#Per.</th>
                         </tr>
                     </ng-template>
-    
-                    <!-- Cuerpo -->
                     <ng-template pTemplate="body" let-row let-i="rowIndex">
                         <tr class="table-info" 
                             [ngClass]="{

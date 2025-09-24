@@ -76,7 +76,8 @@ export class ViajesComponent {
     cerrado: 0,
     grupo: 0,
     estado: 0,
-    aprobado: 0
+    aprobado: 0,
+    usuario_registro: ''
   }
   localidades: any[] = [];
   dni: string = '';
@@ -177,7 +178,8 @@ export class ViajesComponent {
       cerrado: 0,
       grupo: 0,
       estado: 0,
-      aprobado: 0 
+      aprobado: 0,
+      usuario_registro: '' 
     }
   }
 
