@@ -153,9 +153,13 @@ export class AprobacionesViajesComponent {
       this.clearViaje();
       this.viaje.idviaje = this.searchTerm;
       await this.dexieService.saveViajeAprobado(this.viaje);
-      await this.validarViajesRemotos();
-      await this.ListarViajes();
+      await this.llenarDatosViajes();
     }
+  }
+
+  async llenarDatosViajes() {
+    await this.validarViajesRemotos();
+    await this.ListarViajes();
   }
 
   async validarViajesRemotos() {
@@ -237,6 +241,7 @@ export class AprobacionesViajesComponent {
   }
 
   async sincronizarViajes() {
+    await this.llenarDatosViajes();
     const viajes = await this.dexieService.showViajesAprobados();
     const viajessincronizados = viajes.filter(v => v.estado == 0);
     if(viajessincronizados.length==0) {
