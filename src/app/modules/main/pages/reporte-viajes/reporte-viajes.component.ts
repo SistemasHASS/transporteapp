@@ -131,7 +131,6 @@ export class ReporteViajesComponent {
       row.cantidad
     ]);
   
-    // Tomamos valores únicos del primer registro
     const conductor = this.data.length > 0 ? this.data[0].conductor : '';
     const placa = this.data.length > 0 ? this.data[0].placa : '';
     const ruc = this.data.length > 0 ? this.data[0].ruc : '';
@@ -140,36 +139,19 @@ export class ReporteViajesComponent {
     const docDefinition: any = {
       content: [
         { text: 'Reporte de Rendimiento', style: 'header' },
-  
-        // 👇 sección de datos fijos
-        {
-          columns: [
-            { text: `RUC: ${ruc}`, style: 'subHeader' }
-          ],
-          margin: [0, 0, 0, 10]
-        },
+        { columns: [{ text: `RUC: ${ruc}`, style: 'subHeader' }], margin: [0,0,0,10] },
         {
           columns: [
             { text: `Conductor: ${conductor}`, style: 'subHeader' },
             { text: `Placa: ${placa}`, style: 'subHeader', alignment: 'right' }
           ],
-          margin: [0, 0, 0, 5]
+          margin: [0,0,0,5]
         },
-        {
-          columns: [
-            { text: `DNI: ${dni}`, style: 'subHeader' }
-          ],
-          margin: [0, 0, 0, 10]
-        },
-  
-        // 👇 tabla sin RUC, DNI, Conductor ni Placa
+        { columns: [{ text: `DNI: ${dni}`, style: 'subHeader' }], margin: [0,0,0,10] },
         {
           table: {
             headerRows: 1,
-            widths: [
-              'auto','auto','auto','auto',
-              'auto','auto'
-            ],
+            widths: ['auto','auto','auto','auto','auto','auto'],
             body: [
               encabezados.map(h => ({ text: h, style: 'tableHeader' })),
               ...body
@@ -177,47 +159,30 @@ export class ReporteViajesComponent {
           },
           layout: {
             fillColor: (rowIndex: number) => {
-              return rowIndex === 0
-                ? '#337ab7'      // cabecera azul
-                : rowIndex % 2 === 0
-                  ? '#f2f2f2'   // zebra gris
-                  : null;       // fila blanca
+              return rowIndex === 0 ? '#337ab7' : rowIndex % 2 === 0 ? '#f2f2f2' : null;
             }
           }
         }
       ],
       styles: {
-        header: {
-          fontSize: 16,
-          bold: true,
-          alignment: 'center',
-          margin: [0, 0, 0, 10]
-        },
-        subHeader: {
-          fontSize: 11,
-          bold: true
-        },
-        tableHeader: {
-          bold: true,
-          fontSize: 10,
-          color: 'white',
-          alignment: 'center'
-        }
+        header: { fontSize: 16, bold: true, alignment: 'center', margin: [0,0,0,10] },
+        subHeader: { fontSize: 11, bold: true },
+        tableHeader: { bold: true, fontSize: 10, color: 'white', alignment: 'center' }
       },
-      defaultStyle: {
-        fontSize: 9
-      }
+      defaultStyle: { fontSize: 9 }
     };
-    
+  
     const camaraBridge = (window as any).CamaraBridge;
+  
     if (camaraBridge && typeof camaraBridge.savePdf === "function") {
-      if (camaraBridge) {
-        camaraBridge.savePdf(this.data, "reporte.pdf");
-      }
+      pdfMake.createPdf(docDefinition).getBase64((base64Data: string) => {
+        camaraBridge.savePdf(base64Data, "reporte.pdf");
+      });
     } else {
       pdfMake.createPdf(docDefinition).download("reporte.pdf");
     }
   }
+  
 
   exportarExcel(): void {
     try {

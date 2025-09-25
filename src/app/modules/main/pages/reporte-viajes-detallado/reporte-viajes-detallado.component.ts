@@ -210,12 +210,12 @@ data : any = [];
     
     const camaraBridge = (window as any).CamaraBridge;
     if (camaraBridge && typeof camaraBridge.savePdf === "function") {
-      if (camaraBridge) {
-        camaraBridge.savePdf(this.data, "reporte_detallado.pdf");
-      }
+      pdfMake.createPdf(docDefinition).getBase64((base64Data: string) => {
+        camaraBridge.savePdf(base64Data, "reporte_detallado.pdf");
+      });
     } else {
       pdfMake.createPdf(docDefinition).download("reporte_detallado.pdf");
-    } 
+    }
 
   }
 
