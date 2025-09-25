@@ -57,12 +57,16 @@ export class LoginComponent {
       const loginData = this.loginForm.value;
       try {
         const resp = await this.authService.login(loginData.usuario, loginData.clave, 'TRANSPORTE');
-        if (!!resp && resp.length > 0) {
-          if (resp > 1) {
+        if(!!resp && resp.length > 0) {
+          if (resp.length > 1) {
             this.mensajeLogin = 'El usuario cuenta con más de una cuenta, comuníquese con su administrador del servicio.';
           } else {
             await this.dexieService.saveUsuario(resp[0]);
-            this.recuperarViajes(resp[0]);
+            if(resp[0].idrol.includes('SUTRA') || resp[0].idrol.includes('ADTRA')) {
+              this.recuperarViajesControlador(resp[0]);
+            } else {
+              this.recuperarViajes(resp[0]);
+            }
             this.login();
           }
           this.isCharge = false;
@@ -87,6 +91,19 @@ export class LoginComponent {
 			}
 		]
     const viajes = await this.authService.getRecuperarViajes(formato);
+    if (!!viajes && viajes.length > 0) {
+      await this.dexieService.saveViajes(viajes);
+    }
+  }
+
+  async recuperarViajesControlador(usuario: any) {
+    const formato = [
+			{
+				ruc: usuario.ruc,
+				usuario: usuario.usuario
+			}
+		]
+    const viajes = await this.authService.getRecuperarViajesControladores(formato);
     if (!!viajes && viajes.length > 0) {
       await this.dexieService.saveViajes(viajes);
     }

@@ -1,4 +1,4 @@
-import { Component, ViewChild, ElementRef,NgZone } from '@angular/core';
+import { Component, ViewChild, ElementRef,NgZone,ChangeDetectorRef  } from '@angular/core';
 import { TableModule } from 'primeng/table';
 import { CommonModule } from '@angular/common';
 import { DropdownComponent } from "../../components/dropdown/dropdown.component";
@@ -19,6 +19,7 @@ import QRCode from 'qrcode';
   standalone: true,
   styleUrl: './viajes.component.scss'
 })
+
 export class ViajesComponent {
   @ViewChild('dniInput') dniInputRef!: ElementRef<HTMLInputElement>;
   @ViewChild('canvasQR') canvasQR!: ElementRef<HTMLCanvasElement>;
@@ -92,7 +93,8 @@ export class ViajesComponent {
     private alertService: AlertService, 
     private utilsService: UtilsService, 
     private transporteService: TransporteService,
-    private zone: NgZone
+    private zone: NgZone,
+    private cd: ChangeDetectorRef
   ) 
   { }
 
@@ -271,14 +273,17 @@ export class ViajesComponent {
 
   async agregarPersona(mostrarNotificacion:boolean = true) {
     if (this.esCapacidadMaximaAlcanzada()) {
-      this.alertService.showAlert('Alerta!','Capacidad máxima alcanzada','error');
+      this.dni = '';
+      if(mostrarNotificacion) this.alertService.showAlert('Alerta!','Capacidad máxima alcanzada','error');
       return;
     }
     if (!/^\d+$/.test(this.dni)) {
+      this.dni = '';
       if (mostrarNotificacion) this.alertService.showAlert('Alerta!','El Nro Documento debe contener solo dígitos numéricos','error');
       return;
     }
     if (this.dni.length < 8 || this.dni.length > 12) {
+      this.dni = '';
       if (mostrarNotificacion) this.alertService.showAlert('Alerta!','El Nro Documento debe contener entre 8 y 12 dígitos numéricos','error');
       return;
     }
@@ -313,10 +318,11 @@ export class ViajesComponent {
       }
       this.viaje.cantidad = this.viaje.trabajadores.length;
       await this.dixiService.saveViaje(this.viaje);
+      this.dni = '';
     } else {
+      this.dni = '';
       if(mostrarNotificacion) this.alertService.showAlert('Alerta!','Pasajero ya registrado','error');
     }
-    this.dni = '';
   }
 
   async eliminarPersona(persona: any) {
@@ -516,4 +522,16 @@ export class ViajesComponent {
   ngOnDestroy() {
     this.stopAutoFocus();
   }
+
+  onDniChange(value: string) {
+    if (this.configuracion.lecturarapida && /^\d{8,9}$/.test(value)) {
+      this.agregarPersona(false);
+      setTimeout(() => {
+        this.dni = '';
+        this.dniInputRef.nativeElement.value = '';
+        this.cd.detectChanges();
+      }, 0);
+    }
+  }
+  
 }

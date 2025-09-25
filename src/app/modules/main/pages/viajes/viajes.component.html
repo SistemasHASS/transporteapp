@@ -143,7 +143,8 @@
             <div class="row mb-3">
                 <div class="col-md-4">
                   <div class="form-check form-switch">
-                    <input class="form-check-input" type="checkbox" id="lecturaRapidaSwitch" 
+                    <input class="form-check-input" type="checkbox" pattern="\d*"
+                    inputmode="numeric" id="lecturaRapidaSwitch"
                     [(ngModel)]="configuracion.lecturarapida" (change)="onLecturaRapidaChange()">
                     <label class="form-check-label" for="lecturaRapidaSwitch">Lector PDA</label>
                   </div>
@@ -154,8 +155,9 @@
                     <div class="form-group row box-labelFloat">
                         <label class="col-lg-3 col-form-label"><b class="text-danger">*</b>  Dni</label>
                         <div class="col-lg-9">
-                            <input [ngClass]="{'is-invalid': showValidation && !dni, 'is-valid': dni}"
-                                [(ngModel)]="dni" #dniInput type="text" class="form-control" />
+                            <input [(ngModel)]="dni" [ngClass]="{'is-invalid': showValidation && !dni, 'is-valid': dni}"
+                                #dniInput type="text" maxlength="9" class="form-control" (ngModelChange)="onDniChange($event)" 
+                                (keyup.enter)="agregarPersona(false)"/>
                         </div>
                     </div>
                     <button class="btn btn-success mx-1" style="border-radius: 5px;" (click)="agregarPersona()">

@@ -32,8 +32,13 @@ export class AuthService {
     }
   }
 
-  async getRecuperarViajes(body: any){
+  async getRecuperarViajes(body: any) {
     const url = `${this.baseUrl}/transporte/viajes/recuperar-viajes`;
+    return await lastValueFrom(this.http.post<any>(url, body));
+  }
+
+  async getRecuperarViajesControladores(body: any) {
+    const url = `${this.baseUrl}/transporte/viajes/recuperar-viajes-controlador`;
     return await lastValueFrom(this.http.post<any>(url, body));
   }
 
