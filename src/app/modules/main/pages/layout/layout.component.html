@@ -20,7 +20,7 @@
             <div class="media-title font-weight-semibold">
               <span class="Hola">Hola</span>
               <span class="nombre">{{formatNombre(usuario?.nombre)}}</span>
-              <span class="nombre" style="font-size: 10px;">V. 1.7.0</span>
+              <span class="nombre" style="font-size: 10px;">V. 1.8.0</span>
             </div>
           </div>
         </div>
@@ -64,7 +64,7 @@
             <i class="ti ti-dots nav-small-cap-icon fs-6"></i>
             <span class="hide-menu"> Reportes</span>
           </li>
-          <li *ngIf="usuario?.idrol.includes('CHOTRA') || usuario?.idrol.includes('ADTRA')" class="sidebar-item" (click)="toggleSidebar()">
+          <li *ngIf="usuario?.idrol.includes('SUTRA') || usuario?.idrol.includes('CHOTRA') || usuario?.idrol.includes('ADTRA')" class="sidebar-item" (click)="toggleSidebar()">
             <a routerLink="./reporte-viajes" routerLinkActive="active" class="sidebar-link" aria-expanded="false">
               <span>
                 <i class="icon icon-stats-bars2"></i>

@@ -125,15 +125,15 @@ export class ReporteViajesComponent {
     const body = this.data.map((row: any, i: any) => [
       i + 1,
       row.fecharegistro,
-      row.horario_in,
+      row.horario,
       row.puntoinicio,
       row.puntofin,
-      row.cantidad_in
+      row.cantidad
     ]);
   
     // Tomamos valores únicos del primer registro
     const conductor = this.data.length > 0 ? this.data[0].conductor : '';
-    const placa = this.data.length > 0 ? this.data[0].placa_in : '';
+    const placa = this.data.length > 0 ? this.data[0].placa : '';
     const ruc = this.data.length > 0 ? this.data[0].ruc : '';
     const dni = this.data.length > 0 ? this.data[0].DNI_conductor : '';
   
@@ -208,8 +208,15 @@ export class ReporteViajesComponent {
         fontSize: 9
       }
     };
-  
-    pdfMake.createPdf(docDefinition).open();
+    
+    const camaraBridge = (window as any).CamaraBridge;
+    if (camaraBridge && typeof camaraBridge.savePdf === "function") {
+      if (camaraBridge) {
+        camaraBridge.savePdf(this.data, "reporte.pdf");
+      }
+    } else {
+      pdfMake.createPdf(docDefinition).download("reporte.pdf");
+    }
   }
 
   exportarExcel(): void {

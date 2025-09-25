@@ -56,6 +56,8 @@
                   <th>Punto Inicio</th>
                   <th>Punto Fin</th>
                   <th>Cantidad</th>
+                  <th>Estado</th>
+                  <th>Usuario Aprobación</th>
                 </tr>
               </thead>
               <tbody>
@@ -70,6 +72,8 @@
                   <td class="text-center">{{ row.puntoinicio }}</td>
                   <td class="text-center">{{ row.puntofin }}</td>
                   <td class="text-center">{{ row.cantidad }}</td>
+                  <td class="text-center">{{ row.aprobado? 'Aprobado' : 'No Aprobado' }}</td>
+                  <td class="text-center">{{ row.usuario_aprueba }}</td>
                 </tr>
               </tbody>
             </table>

@@ -119,7 +119,8 @@ export class LayoutComponent {
       'parametros': 'Parámetros',
       'viajes': 'Viajes',
       'reporte-viajes': 'Reporte de viajes',
-      'reporte-viajes-detallado': 'Reporte detallado'
+      'reporte-viajes-detallado': 'Reporte detallado',
+      'aprobaciones-viajes': 'Aprobaciones de viajes'
     };
     this.currentPath = pathMap[currentUrl[currentUrl.length - 1]] || '';
   }

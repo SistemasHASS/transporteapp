@@ -44,7 +44,11 @@ export class LoginComponent {
   }
   
   login() {
-    this.router.navigate(['/main/parametros']);
+    if(this.usuario?.idrol.includes('SUTRA')) {
+      this.router.navigate(['/main/aprobaciones-viajes']);
+    } else {
+      this.router.navigate(['/main/parametros']);
+    }
   }
 
   toggleClave(): void {

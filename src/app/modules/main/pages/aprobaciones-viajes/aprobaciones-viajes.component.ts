@@ -250,6 +250,7 @@ export class AprobacionesViajesComponent {
     }
     const confirmacion = await this.alertService.showConfirm('Confirmación', '¿Está seguro de sincronizar los viajes?','warning');
     if (confirmacion) {
+      this.alertService.mostrarModalCarga();
       const resultado = await this.transporteService.enviarViajes(viajessincronizados)
       if(!!resultado && resultado.length>0) {
         if (resultado[0].errorgeneral == 0) {
@@ -285,8 +286,10 @@ export class AprobacionesViajesComponent {
           `;
 
           this.alertService.showAlertAcept('¡Atención!', html, 'warning');
-        }        
+        }    
+        this.alertService.cerrarModalCarga();    
       } else {
+        this.alertService.cerrarModalCarga();    
         this.alertService.showAlert('¡Error!','Error al sincronizar los viajes','error')
       }
     }

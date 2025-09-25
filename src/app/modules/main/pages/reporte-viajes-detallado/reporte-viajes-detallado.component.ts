@@ -207,8 +207,15 @@ data : any = [];
         fontSize: 9
       }
     };
-  
-    pdfMake.createPdf(docDefinition).open();
+    
+    const camaraBridge = (window as any).CamaraBridge;
+    if (camaraBridge && typeof camaraBridge.savePdf === "function") {
+      if (camaraBridge) {
+        camaraBridge.savePdf(this.data, "reporte_detallado.pdf");
+      }
+    } else {
+      pdfMake.createPdf(docDefinition).download("reporte_detallado.pdf");
+    } 
 
   }
 
