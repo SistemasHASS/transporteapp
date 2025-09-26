@@ -46,8 +46,12 @@ export class LoginComponent {
   login() {
     if(this.usuario?.idrol.includes('SUTRA')) {
       this.router.navigate(['/main/aprobaciones-viajes']);
-    } else {
+    } else if(this.usuario?.idrol.includes('ADTRA')) {
       this.router.navigate(['/main/parametros']);
+    } else if(this.usuario?.idrol.includes('CHOTRA')) {
+      this.router.navigate(['/main/parametros']);
+    } else if(this.usuario?.idrol.includes('PROVTRA')) {
+      this.router.navigate(['/main/reporte-viajes']);
     }
   }
 
@@ -67,10 +71,12 @@ export class LoginComponent {
           } else {
             await this.dexieService.saveUsuario(resp[0]);
             if(resp[0].idrol.includes('SUTRA') || resp[0].idrol.includes('ADTRA')) {
-              this.recuperarViajesControlador(resp[0]);
-            } else {
-              this.recuperarViajes(resp[0]);
+              await this.recuperarViajesControlador(resp[0]);
             }
+            if(resp[0].idrol.includes('CHOTRA')) {
+              await this.recuperarViajes(resp[0]);
+            }
+            this.usuario = resp[0];
             this.login();
           }
           this.isCharge = false;

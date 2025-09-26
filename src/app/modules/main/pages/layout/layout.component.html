@@ -28,7 +28,7 @@
       <!-- Sidebar navigation-->
       <nav class="sidebar-nav scroll-sidebar" data-simplebar="">
         <ul>
-          <li class="nav-small-cap">
+          <li *ngIf="usuario?.idrol.includes('CHOTRA') || usuario?.idrol.includes('ADTRA')" class="nav-small-cap">
             <i class="ti ti-dots nav-small-cap-icon fs-6"></i>
             <span class="hide-menu"> Configuración</span>
           </li>
@@ -40,7 +40,7 @@
               <span class="hide-menu"> Parámetros</span>
             </a>
           </li>
-          <li class="nav-small-cap">
+          <li *ngIf="usuario?.idrol.includes('SUTRA') || usuario?.idrol.includes('CHOTRA') || usuario?.idrol.includes('ADTRA')"  class="nav-small-cap">
             <i class="ti ti-dots nav-small-cap-icon fs-6"></i>
             <span class="hide-menu"> Procesos</span>
           </li>
@@ -64,7 +64,7 @@
             <i class="ti ti-dots nav-small-cap-icon fs-6"></i>
             <span class="hide-menu"> Reportes</span>
           </li>
-          <li *ngIf="usuario?.idrol.includes('SUTRA') || usuario?.idrol.includes('CHOTRA') || usuario?.idrol.includes('ADTRA')" class="sidebar-item" (click)="toggleSidebar()">
+          <li *ngIf="usuario?.idrol.includes('PROVTRA') || usuario?.idrol.includes('SUTRA') || usuario?.idrol.includes('CHOTRA') || usuario?.idrol.includes('ADTRA')" class="sidebar-item" (click)="toggleSidebar()">
             <a routerLink="./reporte-viajes" routerLinkActive="active" class="sidebar-link" aria-expanded="false">
               <span>
                 <i class="icon icon-stats-bars2"></i>
@@ -72,7 +72,7 @@
               <span class="hide-menu"> Reporte de viajes</span>
             </a>
           </li>
-          <li *ngIf="usuario?.idrol.includes('CHOTRA') || usuario?.idrol.includes('ADTRA')" class="sidebar-item" (click)="toggleSidebar()">
+          <li *ngIf="usuario?.idrol.includes('PROVTRA') || usuario?.idrol.includes('SUTRA') || usuario?.idrol.includes('CHOTRA') || usuario?.idrol.includes('ADTRA')" class="sidebar-item" (click)="toggleSidebar()">
             <a routerLink="./reporte-viajes-detallado" routerLinkActive="active" class="sidebar-link" aria-expanded="false">
               <span>
                 <i class="icon icon-stats-bars2"></i>
