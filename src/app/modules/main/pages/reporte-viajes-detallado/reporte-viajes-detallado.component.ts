@@ -221,13 +221,13 @@ data : any = [];
 
   exportarExcel(): void {
     try {
-      const nombreArchivo = `reporte_detallado_${new Date().toISOString().slice(0,10)}.xlsx`;
+      const nombreArchivo = `reporte_viajes_${new Date().toISOString().slice(0,10)}.xlsx`;
       const ws: XLSX.WorkSheet = XLSX.utils.json_to_sheet(this.data);
       const wb: XLSX.WorkBook = XLSX.utils.book_new();
-      XLSX.utils.book_append_sheet(wb, ws, nombreArchivo);
-      const excelBase64 = XLSX.write(wb, { bookType: 'xlsx', type: 'base64' });
-      const dataUri = "data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64," + excelBase64;
-      window.open(dataUri, "_blank");
+      XLSX.utils.book_append_sheet(wb, ws, 'Reporte_detallado');
+      const excelBuffer: any = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
+      const blob = new Blob([excelBuffer], { type: 'application/octet-stream' });
+      FileSaver.saveAs(blob, nombreArchivo);
     } catch (error) {
       this.alertService.showAlert('Importante!', 'No existe herramienta para excel', 'info');
     }

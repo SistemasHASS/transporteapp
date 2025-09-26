@@ -34,16 +34,32 @@
         <button class="btn btn-sm btn-success" (click)="exportarExcel()">
           <i class="icon icon-file-excel"></i> Excel
         </button>
-        <button class="btn btn-sm btn-danger" (click)="exportarPDF()">
+        <!-- <button class="btn btn-sm btn-danger" (click)="exportarPDF()">
           <i class="icon icon-file-pdf"></i> PDF
-        </button>
+        </button> -->
       </div>
   
       <div class="row tablaEsconder" *ngIf="data.length > 0">
         <div class="col-md-12">
-          <!-- scroll horizontal -->
           <div class="table-responsive tabla-scroll">
             <table class="table table-bordered table-striped table-sm tabla-compacta">
+              <thead style="position: sticky; top: 0; z-index: 1; background-color: white;">
+                <tr class="bg-primary text-white text-center">
+                  <!-- Cabeceras dinámicas -->
+                  <th *ngFor="let col of columnas">{{ col.toUpperCase().replace('_', ' ') }}</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let row of data">
+                  <!-- Filas dinámicas -->
+                  <td *ngFor="let col of columnas" class="text-center">
+                    <!-- Tratamiento especial si la columna es "aprobado" -->
+                    {{ col.toLowerCase() === 'aprobado' ? (row[col] ? 'Aprobado' : 'No Aprobado') : row[col] }}
+                  </td>
+                </tr>
+              </tbody>
+            </table>            
+            <!-- <table class="table table-bordered table-striped table-sm tabla-compacta">
               <thead style="position: sticky; top: 0; z-index: 1; background-color: white;">
                 <tr class="bg-primary text-white text-center">
                   <th>#</th>
@@ -76,7 +92,7 @@
                   <td class="text-center">{{ row.usuario_aprueba }}</td>
                 </tr>
               </tbody>
-            </table>
+            </table> -->
           </div>
         </div>
       </div>          

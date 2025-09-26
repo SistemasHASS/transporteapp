@@ -22,6 +22,7 @@ export class ReporteViajesComponent {
   data : any = [];
   columns: any = [];
   body: any = [];
+  columnas: string[] = [];
   usuario: Usuario = {
     id: '',
     documentoidentidad: '',
@@ -64,11 +65,21 @@ export class ReporteViajesComponent {
     this.alertService.mostrarModalCarga();
     switch(this.activeTab){
       case "home": {
-        const formato = await this.getFormatoReporte()
+        let formato
+        if(this.usuario.idrol.includes('CHOTRA')){
+          formato = await this.getFormatoReporte()
+        }
+        if(this.usuario.idrol.includes('PROVTRA')){
+          formato = await this.getFormatoReporteProv()
+        }
+        if(this.usuario.idrol.includes('ADTRA')){
+          formato = await this.getFormatoReporteAdministrador()
+        }
         const result = await this.reporteService.getReporteViajes(formato)
         this.alertService.cerrarModalCarga();
         if(result.length>0) {
           this.data = result
+          this.columnas = Object.keys(this.data[0]);
         } else {
           this.data.length = 0
           this.alertService.showAlert('Importante!', 'No existe un reporte para mostrar', 'info');
@@ -76,6 +87,39 @@ export class ReporteViajesComponent {
         break;
       }
     }
+  }
+
+  async getFormatoReporte() {
+    return [{
+      ruc: this.usuario.ruc,
+      desde: this.formatDateViaje(this.fdesde),
+      hasta: this.formatDateViaje(this.fhasta),
+      conductor: this.usuario.documentoidentidad,
+      proveedor: '',
+      idrol: 'CHOTRA'
+    }]
+  }
+
+  async getFormatoReporteProv() {
+    return [{
+      ruc: this.usuario.ruc,
+      desde: this.formatDateViaje(this.fdesde),
+      hasta: this.formatDateViaje(this.fhasta),
+      conductor: '',
+      proveedor: this.usuario.documentoidentidad,
+      idrol: 'PROVTRA'
+    }]
+  }
+
+  async getFormatoReporteAdministrador() {
+    return [{
+      ruc: this.usuario.ruc,
+      desde: this.formatDateViaje(this.fdesde),
+      hasta: this.formatDateViaje(this.fhasta),
+      conductor: '',
+      proveedor: '',
+      idrol: 'ADTRA'
+    }]
   }
 
   get reportesKeys(): string[] {
@@ -99,16 +143,6 @@ export class ReporteViajesComponent {
     FileSaver.saveAs(blobData, `${key}.xlsx`);
   }
 
-
-  async getFormatoReporte() {
-    return [{
-      ruc: this.usuario.ruc,
-      conductor: this.usuario.idrol.includes('CHOTRA')?this.usuario.documentoidentidad: '',
-      desde: this.formatDateViaje(this.fdesde),
-      hasta: this.formatDateViaje(this.fhasta)
-    }]
-  }
-
   getDate() {
     return moment(new Date()).format('YYYY-MM-DD')
   }
@@ -118,43 +152,40 @@ export class ReporteViajesComponent {
   }
 
   exportarPDF() {
-    const encabezados = [
-      '#','Fecha Registro','Horario', 'Punto Inicio', 'Punto Fin','# Pasajeros'
-    ];
+    if (!this.data || this.data.length === 0) {
+      return;
+    }
   
-    const body = this.data.map((row: any, i: any) => [
-      i + 1,
-      row.fecharegistro,
-      row.horario,
-      row.puntoinicio,
-      row.puntofin,
-      row.cantidad
-    ]);
+    // 1. Obtener las columnas de forma dinámica (todas las claves del primer objeto)
+    const columnas = Object.keys(this.data[0]);
   
-    const conductor = this.data.length > 0 ? this.data[0].conductor : '';
-    const placa = this.data.length > 0 ? this.data[0].placa : '';
-    const ruc = this.data.length > 0 ? this.data[0].ruc : '';
-    const dni = this.data.length > 0 ? this.data[0].DNI_conductor : '';
+    // 2. Generar encabezados con títulos legibles
+    const encabezados = columnas.map(col => ({
+      text: col.toUpperCase().replace(/_/g, ' '), // "DNI_conductor" → "DNI CONDUCTOR"
+      style: 'tableHeader'
+    }));
   
+    // 3. Generar las filas dinámicas
+    const body = this.data.map((row: any) =>
+      columnas.map(col => {
+        if (col.toLowerCase() === 'aprobado') {
+          return row[col] ? 'Aprobado' : 'No Aprobado';
+        }
+        return row[col] ?? '';
+      })
+    );
+  
+    // 4. Construir definición del documento
     const docDefinition: any = {
       content: [
-        { text: 'Reporte de Rendimiento', style: 'header' },
-        { columns: [{ text: `RUC: ${ruc}`, style: 'subHeader' }], margin: [0,0,0,10] },
-        {
-          columns: [
-            { text: `Conductor: ${conductor}`, style: 'subHeader' },
-            { text: `Placa: ${placa}`, style: 'subHeader', alignment: 'right' }
-          ],
-          margin: [0,0,0,5]
-        },
-        { columns: [{ text: `DNI: ${dni}`, style: 'subHeader' }], margin: [0,0,0,10] },
+        { text: 'Reporte Dinámico', style: 'header' },
         {
           table: {
             headerRows: 1,
-            widths: ['auto','auto','auto','auto','auto','auto'],
+            widths: columnas.map(() => 'auto'),
             body: [
-              encabezados.map(h => ({ text: h, style: 'tableHeader' })),
-              ...body
+              encabezados, // cabeceras
+              ...body      // filas
             ]
           },
           layout: {
@@ -165,36 +196,103 @@ export class ReporteViajesComponent {
         }
       ],
       styles: {
-        header: { fontSize: 16, bold: true, alignment: 'center', margin: [0,0,0,10] },
-        subHeader: { fontSize: 11, bold: true },
+        header: { fontSize: 16, bold: true, alignment: 'center', margin: [0, 0, 0, 10] },
         tableHeader: { bold: true, fontSize: 10, color: 'white', alignment: 'center' }
       },
       defaultStyle: { fontSize: 9 }
     };
   
+    // 5. Guardar o descargar
     const camaraBridge = (window as any).CamaraBridge;
-  
-    if (camaraBridge && typeof camaraBridge.savePdf === "function") {
+    if (camaraBridge && typeof camaraBridge.savePdf === 'function') {
       pdfMake.createPdf(docDefinition).getBase64((base64Data: string) => {
-        camaraBridge.savePdf(base64Data, "reporte.pdf");
+        camaraBridge.savePdf(base64Data, 'reporte.pdf');
       });
     } else {
-      pdfMake.createPdf(docDefinition).download("reporte.pdf");
+      pdfMake.createPdf(docDefinition).download('reporte.pdf');
     }
   }
   
 
+  // exportarPDF() {
+  //   const encabezados = [
+  //     '#','Fecha Registro','Horario', 'Punto Inicio', 'Punto Fin','# Pasajeros'
+  //   ];
+  
+  //   const body = this.data.map((row: any, i: any) => [
+  //     i + 1,
+  //     row.fecharegistro,
+  //     row.horario,
+  //     row.puntoinicio,
+  //     row.puntofin,
+  //     row.cantidad
+  //   ]);
+  
+  //   const conductor = this.data.length > 0 ? this.data[0].conductor : '';
+  //   const placa = this.data.length > 0 ? this.data[0].placa : '';
+  //   const ruc = this.data.length > 0 ? this.data[0].ruc : '';
+  //   const dni = this.data.length > 0 ? this.data[0].DNI_conductor : '';
+  
+  //   const docDefinition: any = {
+  //     content: [
+  //       { text: 'Reporte de Rendimiento', style: 'header' },
+  //       { columns: [{ text: `RUC: ${ruc}`, style: 'subHeader' }], margin: [0,0,0,10] },
+  //       {
+  //         columns: [
+  //           { text: `Conductor: ${conductor}`, style: 'subHeader' },
+  //           { text: `Placa: ${placa}`, style: 'subHeader', alignment: 'right' }
+  //         ],
+  //         margin: [0,0,0,5]
+  //       },
+  //       { columns: [{ text: `DNI: ${dni}`, style: 'subHeader' }], margin: [0,0,0,10] },
+  //       {
+  //         table: {
+  //           headerRows: 1,
+  //           widths: ['auto','auto','auto','auto','auto','auto'],
+  //           body: [
+  //             encabezados.map(h => ({ text: h, style: 'tableHeader' })),
+  //             ...body
+  //           ]
+  //         },
+  //         layout: {
+  //           fillColor: (rowIndex: number) => {
+  //             return rowIndex === 0 ? '#337ab7' : rowIndex % 2 === 0 ? '#f2f2f2' : null;
+  //           }
+  //         }
+  //       }
+  //     ],
+  //     styles: {
+  //       header: { fontSize: 16, bold: true, alignment: 'center', margin: [0,0,0,10] },
+  //       subHeader: { fontSize: 11, bold: true },
+  //       tableHeader: { bold: true, fontSize: 10, color: 'white', alignment: 'center' }
+  //     },
+  //     defaultStyle: { fontSize: 9 }
+  //   };
+  
+  //   const camaraBridge = (window as any).CamaraBridge;
+  
+  //   if (camaraBridge && typeof camaraBridge.savePdf === "function") {
+  //     pdfMake.createPdf(docDefinition).getBase64((base64Data: string) => {
+  //       camaraBridge.savePdf(base64Data, "reporte.pdf");
+  //     });
+  //   } else {
+  //     pdfMake.createPdf(docDefinition).download("reporte.pdf");
+  //   }
+  // }
+  
   exportarExcel(): void {
     try {
-      const nombreArchivo = `reporte_detallado_${new Date().toISOString().slice(0,10)}.xlsx`;
+      const nombreArchivo = `reporte_viajes_${new Date().toISOString().slice(0,10)}.xlsx`;
       const ws: XLSX.WorkSheet = XLSX.utils.json_to_sheet(this.data);
       const wb: XLSX.WorkBook = XLSX.utils.book_new();
-      XLSX.utils.book_append_sheet(wb, ws, nombreArchivo);
-      const excelBase64 = XLSX.write(wb, { bookType: 'xlsx', type: 'base64' });
-      const dataUri = "data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64," + excelBase64;
-      window.open(dataUri, "_blank");
+      XLSX.utils.book_append_sheet(wb, ws, 'Reporte');
+      const excelBuffer: any = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
+      const blob = new Blob([excelBuffer], { type: 'application/octet-stream' });
+      FileSaver.saveAs(blob, nombreArchivo);
     } catch (error) {
+      console.log(error);
       this.alertService.showAlert('Importante!', 'No existe herramienta para excel', 'info');
     }
   }
+  
 }
