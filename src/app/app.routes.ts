@@ -7,6 +7,7 @@ import { ViajesComponent } from './modules/main/pages/viajes/viajes.component';
 import { ReporteViajesComponent } from './modules/main/pages/reporte-viajes/reporte-viajes.component';
 import { ReporteViajesDetalladoComponent } from './modules/main/pages/reporte-viajes-detallado/reporte-viajes-detallado.component';
 import { AprobacionesViajesComponent } from './modules/main/pages/aprobaciones-viajes/aprobaciones-viajes.component';
+import { ViajesAdministracionComponent } from './modules/main/pages/viajes-administracion/viajes-administracion.component';
 
 export const routes: Routes = [
   {
@@ -31,6 +32,7 @@ export const routes: Routes = [
       { path: 'reporte-viajes', component: ReporteViajesComponent },
       { path: 'reporte-viajes-detallado', component: ReporteViajesDetalladoComponent },
       { path: 'aprobaciones-viajes', component: AprobacionesViajesComponent },
+      { path: 'viajes-administracion', component: ViajesAdministracionComponent },
       { path: '**', redirectTo: 'auth/login' },
     ],
     canActivate: [AuthGuard]

@@ -38,7 +38,7 @@ export class AuthService {
   }
 
   async getRecuperarViajesControladores(body: any) {
-    const url = `${this.baseUrl}/transporte/viajes/recuperar-viajes-controlador`;
+    const url = `${this.baseUrl}/transporte/viajes/recuperar-viaje-controlador`;
     return await lastValueFrom(this.http.post<any>(url, body));
   }
 

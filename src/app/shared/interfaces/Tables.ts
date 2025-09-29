@@ -119,3 +119,28 @@ export interface Trabajador {
     motivosalida: number
 }
 
+export interface Conductor {
+    id: number;
+    codigo: string;
+    nombres: string;
+    apellidoPaterno: string;
+    apellidoMaterno: string;
+    nombresCompletos: string;
+    dni: string;
+    transportistaId: number;
+    transportistaRazonsocial: string;
+    nroLicencia: string;
+    tipoBreveteId: number;
+    nombreBrevete: string; 
+    fvlicencia: string;
+    fvsctr: string;
+    estado: number;
+    index?: number;
+    ruc: string;
+    rucCliente: string;
+    empresaCliente: string;
+    empresaId: string;
+    fechaRegistro: string;
+}
+
+

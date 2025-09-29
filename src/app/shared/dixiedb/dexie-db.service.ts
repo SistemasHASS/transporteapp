@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Usuario,Configuracion,Fundo,Cultivo,Vehiculos, Empresa, Localidades, Trabajador,Viaje} from '../interfaces/Tables'
+import { Usuario,Configuracion,Fundo,Cultivo,Vehiculos, Empresa, Localidades, Trabajador,Viaje, Conductor} from '../interfaces/Tables'
 import Dexie from 'dexie';
 
 @Injectable({
@@ -17,6 +17,7 @@ export class DexieService extends Dexie {
   public trabajadores!: Dexie.Table<Trabajador, string>;
   public viajes!: Dexie.Table<Viaje, string>;
   public viajesAprobados!: Dexie.Table<Viaje, string>;
+  public conductores!: Dexie.Table<Conductor, string>;
   
   constructor() {
     super('Transporte');
@@ -36,6 +37,7 @@ export class DexieService extends Dexie {
       trabajadores: `id,nombres,apellidopaterno,apellidomaterno,estado,index,empresaNombre,fechaRegistro`,
       viajes: `idviaje,ruc,conductor,fecharegistro,horario,idempresa,idfundo,placa,capacidad,cantidad,idpuntoinicio,idpuntofin,trabajadores,eliminado,cerrado,grupo,estado,aprobado`,
       viajesAprobados: `idviaje,ruc,conductor,fecharegistro,horario,idempresa,idfundo,placa,capacidad,cantidad,idpuntoinicio,idpuntofin,trabajadores,eliminado,cerrado,grupo,estado,aprobado`,
+      conductores: `id,codigo,nombres,apellidoPaterno,apellidoMaterno,nombresCompletos,dni,transportistaId,transportistaRazonsocial,nroLicencia,tipoBreveteId,nombreBrevete,fvlicencia,fvsctr,estado,index,ruc,rucCliente,empresaCliente,empresaId,fechaRegistro`,
     });
 
     this.usuarios = this.table('usuarios');
@@ -48,6 +50,7 @@ export class DexieService extends Dexie {
     this.trabajadores = this.table('trabajadores');
     this.viajes = this.table('viajes');
     this.viajesAprobados = this.table('viajesAprobados');
+    this.conductores = this.table('conductores');
   }
 
   async saveUsuario(usuario: Usuario) {await this.usuarios.put(usuario);}
@@ -114,6 +117,12 @@ export class DexieService extends Dexie {
   async updateAprobadoViajeAprobado(idviaje: string, aprobado: number) {await this.viajesAprobados.update(idviaje, {aprobado});}
   async clearViajesAprobados() {await this.viajesAprobados.clear();}
   //
+  async saveConductor(conductor: Conductor) {await this.conductores.put(conductor);}
+  async saveConductores(conductores: Conductor[]) {await this.conductores.bulkPut(conductores);}
+  async showConductores() {return await this.conductores.toArray();}
+  async showConductorById(id: string) {return await this.conductores.where('id').equals(id).first()}
+  async clearConductores() {await this.conductores.clear();}
+  //
   async clearMaestras() {
     await this.clearFundos();
     await this.clearCultivos();
@@ -122,6 +131,7 @@ export class DexieService extends Dexie {
     await this.clearLocalidades();
     await this.clearTrabajadores();
     await this.clearViajes();
+    await this.clearConductores();
     console.log('Todas las tablas de configuracion han sido limpiadas en indexedDB.');
   }
   
