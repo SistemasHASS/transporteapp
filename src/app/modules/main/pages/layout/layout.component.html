@@ -52,7 +52,7 @@
               <span class="hide-menu"> Viajes</span>
             </a>
           </li>
-          <li *ngIf="usuario?.idrol.includes('CHOTRA') || usuario?.idrol.includes('ADTRA')" class="sidebar-item" (click)="toggleSidebar()">
+          <li *ngIf="usuario?.idrol.includes('ADTRA')" class="sidebar-item" (click)="toggleSidebar()">
             <a routerLink="./viajes-administracion" routerLinkActive="active" class="sidebar-link" aria-expanded="false">
               <span>
                 <i class="icon icon-truck"></i>

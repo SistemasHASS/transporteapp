@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { DexieService } from '@/app/shared/dixiedb/dexie-db.service';
@@ -17,6 +17,7 @@ import { DropdownComponent } from "../../components/dropdown/dropdown.component"
   styleUrls: ['./parametros.component.scss']
 })
 export class ParametrosComponent {
+  @ViewChild(DropdownComponent) dropdownRef!: DropdownComponent;
 
   constructor(
     private dexieService: DexieService,
@@ -148,6 +149,13 @@ export class ParametrosComponent {
   
   async guardarConfiguracion() {
     this.showValidation = true;
+    const dropdown = this.dropdownRef;
+    dropdown.validateSelection();
+
+    if (!this.configuracion.placa) {
+      this.alertService.showAlert('Advertencia!','Debe seleccionar una placa','warning')
+      return;
+    }
     if(!this.configuracion.placa || this.configuracion.placa.trim() === '' ||
       this.configuracion.idempresa === '' || this.configuracion.idfundo === '' || this.configuracion.capacidad === 0) {
       this.alertService.showAlert('Advertencia!','Debe seleccionar todos los campos','warning')
@@ -159,6 +167,10 @@ export class ParametrosComponent {
   }
 
   async darCapacidad() {
+    if(!this.configuracion.placa || this.configuracion.placa.trim() === '') {
+      this.configuracion.capacidad = 0;
+      return;
+    }
     const vehiculo = this.vehiculos.find((vehiculo: any) => vehiculo.placa == this.configuracion.placa)
     if(vehiculo) {
       this.configuracion.capacidad = vehiculo.capacidad

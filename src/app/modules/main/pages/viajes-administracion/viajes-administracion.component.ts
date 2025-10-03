@@ -394,7 +394,11 @@ export class ViajesAdministracionComponent {
     this.viaje.idviaje = this.usuario.ruc+this.usuario.documentoidentidad+this.configuracion.placa+this.utilsService.formatoAnioMesDiaHoraMinSec();
     this.viaje.ruc = this.usuario.ruc;
     this.viaje.conductor = this.usuario.documentoidentidad;
-    this.viaje.horario = esNoche ? 'Noche' : 'Dia';
+    if(this.usuario.ruc == '20481121966'){
+      this.viaje.horario = esNoche ? 'Noche' : 'Dia';
+    } else {
+      this.viaje.horario = 'Dia';
+    }
     this.viaje.idempresa = this.configuracion.idempresa;
     this.viaje.idfundo = this.configuracion.idfundo;
     this.viaje.placa = this.configuracion.placa;
@@ -508,7 +512,6 @@ export class ViajesAdministracionComponent {
   }
 
   async generarQRIdViaje(texto: string) {
-    console.log('texto: ',texto);
     if (this.canvasQR) {
       QRCode.toCanvas(this.canvasQR.nativeElement, texto, {
         width: 150

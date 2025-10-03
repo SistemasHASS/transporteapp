@@ -214,8 +214,8 @@
     </div>
 </div>
 <!-- Modal camara -->
-<div class="modal" #modalViaje>
-    <div class="modal-dialog modal-lg modal-dialog-centered">
+<div class="modal" #modalViaje data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title"><i class="icon-file-text mr-2"></i>Puntos de viaje</h5>
@@ -225,7 +225,7 @@
                     <div class="col-md-6 d-flex align-items-center">
                         <div style="flex: 0 0 50px;"><i class="icon icon-car icon-2x"></i></div>
                         <div style="flex: 1;">
-                            <label for="placa">Punto de inicio</label>
+                            <label for="placa"><b class="text-danger">*</b> Punto de inicio</label>
                             <app-dropdown [(ngModel)]="viaje.idpuntoinicio"
                             [editable]="true" [data]="localidades" [valueField]="'id'" 
                             [textShow2]="'Inicio'" [optionLabel]="'nombre'"
@@ -235,7 +235,7 @@
                     <div class="col-md-6 d-flex align-items-center">
                         <div style="flex: 0 0 50px;"><i class="icon icon-car icon-2x"></i></div>
                         <div style="flex: 1;">
-                            <label for="placa">Punto de fin</label>
+                            <label for="placa"><b class="text-danger">*</b> Punto de fin</label>
                             <app-dropdown [(ngModel)]="viaje.idpuntofin"
                             [editable]="true" [data]="localidades" [valueField]="'id'" 
                             [textShow2]="'Fin'" [optionLabel]="'nombre'"

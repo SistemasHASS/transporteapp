@@ -103,15 +103,24 @@ export class DropdownComponent implements ControlValueAccessor, OnChanges {
     const value = input.value;
   
     if (!value || value.trim() === '') {
-      this.selectedItem = null;
-      this.onChange(null);
-      this.filteredData = [...this.data];
-      this.isDrop = false;
+      this.clearSelection();
       return;
     }
+  
     this.filterData(value);
     this.isDrop = true;
+  
+    // si lo escrito no coincide, no asignamos selección
+    const match = this.data.find(item => 
+      item[this.optionLabel].toLowerCase() === value.toLowerCase()
+    );
+    if (!match) {
+      this.selectedItem = value; // queda como texto temporal
+    } else {
+      this.darItem(match);
+    }
   }
+  
 
   
   filterData(searchTerm: string) {
@@ -126,4 +135,13 @@ export class DropdownComponent implements ControlValueAccessor, OnChanges {
     this.onChange(null);
     this.closeDropdown();
   }
+
+  validateSelection() {
+    if (!this.selectedItem || 
+        !this.data.some(item => item[this.optionLabel] === this.selectedItem)) {
+      this.clearSelection();
+      this.showValidation = true;
+    }
+  }
+  
 }

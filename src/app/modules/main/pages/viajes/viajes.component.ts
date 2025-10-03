@@ -1,4 +1,4 @@
-import { Component, ViewChild, ElementRef,NgZone,ChangeDetectorRef  } from '@angular/core';
+import { Component, ViewChild, ElementRef,NgZone,ChangeDetectorRef,ViewChildren,QueryList  } from '@angular/core';
 import { TableModule } from 'primeng/table';
 import { CommonModule } from '@angular/common';
 import { DropdownComponent } from "../../components/dropdown/dropdown.component";
@@ -21,6 +21,7 @@ import QRCode from 'qrcode';
 })
 
 export class ViajesComponent {
+  @ViewChildren(DropdownComponent) dropdowns!: QueryList<DropdownComponent>;
   @ViewChild('dniInput') dniInputRef!: ElementRef<HTMLInputElement>;
   @ViewChild('canvasQR') canvasQR!: ElementRef<HTMLCanvasElement>;
 
@@ -348,13 +349,28 @@ export class ViajesComponent {
   }
 
   async crearViaje() {
+    if(this.viaje.idpuntoinicio == null || this.viaje.idpuntofin == null || this.viaje.idpuntoinicio == '' || this.viaje.idpuntofin == '') {
+      // recorrer y validar cada dropdown
+      this.dropdowns.forEach(dropdown => dropdown.validateSelection());
+
+      this.alertService.showAlert(
+        'Advertencia!',
+        'Debe seleccionar los campos obligatorios',
+        'warning'
+      );
+    return;
+    }
     this.modalViajeInstance.hide();
     const horaActual = new Date().getHours();
     const esNoche = horaActual >= 19 || (horaActual >= 0 && horaActual < 6);
     this.viaje.idviaje = this.usuario.ruc+this.usuario.documentoidentidad+this.configuracion.placa+this.utilsService.formatoAnioMesDiaHoraMinSec();
     this.viaje.ruc = this.usuario.ruc;
     this.viaje.conductor = this.usuario.documentoidentidad;
-    this.viaje.horario = esNoche ? 'Noche' : 'Dia';
+    if(this.usuario.ruc == '20481121966'){
+      this.viaje.horario = esNoche ? 'Noche' : 'Dia';
+    } else {
+      this.viaje.horario = 'Dia';
+    }
     this.viaje.idempresa = this.configuracion.idempresa;
     this.viaje.idfundo = this.configuracion.idfundo;
     this.viaje.placa = this.configuracion.placa;

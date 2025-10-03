@@ -6,6 +6,7 @@ import { ReporteService } from '../../services/reporte.service';
 import moment from 'moment';
 import * as XLSX from 'xlsx-js-style';
 import FileSaver from 'file-saver';
+import * as ExcelJS from 'exceljs';
 import { AlertService } from '@/app/shared/alertas/alerts.service';
 import pdfMake from 'pdfmake/build/pdfmake';
 import 'pdfmake/build/vfs_fonts';
@@ -219,15 +220,53 @@ data : any = [];
 
   }
 
+  // exportarExcel(): void {
+  //   try {
+  //     const nombreArchivo = `reporte_viajes_${new Date().toISOString().slice(0,10)}.xlsx`;
+  //     const ws: XLSX.WorkSheet = XLSX.utils.json_to_sheet(this.data);
+  //     const wb: XLSX.WorkBook = XLSX.utils.book_new();
+  //     XLSX.utils.book_append_sheet(wb, ws, 'Reporte_detallado');
+  //     const excelBuffer: any = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
+  //     const blob = new Blob([excelBuffer], { type: 'application/octet-stream' });
+  //     FileSaver.saveAs(blob, nombreArchivo);
+  //   } catch (error) {
+  //     this.alertService.showAlert('Importante!', 'No existe herramienta para excel', 'info');
+  //   }
+  // }
+
   exportarExcel(): void {
     try {
-      const nombreArchivo = `reporte_viajes_${new Date().toISOString().slice(0,10)}.xlsx`;
-      const ws: XLSX.WorkSheet = XLSX.utils.json_to_sheet(this.data);
-      const wb: XLSX.WorkBook = XLSX.utils.book_new();
-      XLSX.utils.book_append_sheet(wb, ws, 'Reporte_detallado');
-      const excelBuffer: any = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
-      const blob = new Blob([excelBuffer], { type: 'application/octet-stream' });
-      FileSaver.saveAs(blob, nombreArchivo);
+      const workbook = new ExcelJS.Workbook();
+      const worksheet = workbook.addWorksheet('Reporte');
+
+      const headers = Object.keys(this.data[0] || {});
+      worksheet.addRow(headers).eachCell(cell => {
+        cell.font = { bold: true, color: { argb: 'FFFFFF' } };
+        cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: '337AB7' } };
+        cell.alignment = { horizontal: 'center', vertical: 'middle' };
+      });
+
+      this.data.forEach((item: any, index: any) => {
+        const row = worksheet.addRow(Object.values(item));
+  
+        const fillColor = index % 2 === 0 ? 'DCE6F1' : 'C8D7E8'; // zebra
+        row.eachCell(cell => {
+          cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: fillColor } };
+          cell.border = {
+            top: { style: 'thin', color: { argb: 'FFF2F2F2' } },
+            left: { style: 'thin', color: { argb: 'FFF2F2F2' } },
+            bottom: { style: 'thin', color: { argb: 'FFF2F2F2' } },
+            right: { style: 'thin', color: { argb: 'FFF2F2F2' } }
+          };
+          cell.alignment = { horizontal: 'center', vertical: 'middle' };
+        });
+      });
+
+      const nombreArchivo = `reporte_viajes_detallado_${new Date().toISOString().slice(0, 10)}.xlsx`;
+      workbook.xlsx.writeBuffer().then(buffer => {
+        const blob = new Blob([buffer], { type: 'application/octet-stream' });
+        FileSaver.saveAs(blob, nombreArchivo);
+      });
     } catch (error) {
       this.alertService.showAlert('Importante!', 'No existe herramienta para excel', 'info');
     }
