@@ -273,7 +273,8 @@ export class ViajesComponent {
   }
 
   async agregarPersona(mostrarNotificacion:boolean = true) {
-    if (this.esCapacidadMaximaAlcanzada()) {
+    this.dni = this.dni.trim();
+    if(this.esCapacidadMaximaAlcanzada()) {
       this.dni = '';
       if(mostrarNotificacion) this.alertService.showAlert('Alerta!','Capacidad máxima alcanzada','error');
       return;
