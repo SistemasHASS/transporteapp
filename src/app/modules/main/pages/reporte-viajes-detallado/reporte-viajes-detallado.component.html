@@ -41,8 +41,31 @@
 
     <div class="row tablaEsconder" *ngIf="data.length > 0">
       <div class="col-md-12">
-        <!-- scroll horizontal -->
         <div class="table-responsive tabla-scroll">
+          <table class="table table-bordered table-striped table-sm tabla-compacta">
+            <thead style="position: sticky; top: 0; z-index: 1; background-color: white;">
+              <tr class="bg-primary text-white text-center">
+                <th>#</th>
+                <th *ngFor="let col of columnas">
+                  {{ col.toUpperCase().replace('_', ' ') }}
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let row of data; let i = index">
+                <td class="text-center">{{ i + 1 }}</td>
+                <td *ngFor="let col of columnas" class="text-center">
+                  <!-- Ejemplo: mostrar texto especial si es aprobado -->
+                  {{ col.toLowerCase() === 'aprobado' 
+                      ? (row[col] ? 'Aprobado' : 'No Aprobado') 
+                      : (row[col] ?? '-') }}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <!-- scroll horizontal -->
+        <!-- <div class="table-responsive tabla-scroll">
           <table class="table table-bordered table-striped table-sm tabla-compacta">
             <thead style="position: sticky; top: 0; z-index: 1; background-color: white;">
               <tr class="bg-primary text-white text-center">
@@ -77,7 +100,7 @@
               </tr>
             </tbody>
           </table>
-        </div>
+        </div> -->
       </div>
     </div>          
   </div>

@@ -19,8 +19,8 @@ import { Usuario } from '@/app/shared/interfaces/Tables';
   styleUrl: './reporte-viajes-detallado.component.scss'
 })
 export class ReporteViajesDetalladoComponent {
-data : any = [];
-  columns: any = [];
+  data : any = [];
+  columnas: any = [];
   body: any = [];
   usuario: Usuario = {
     id: '',
@@ -61,22 +61,27 @@ data : any = [];
   }
 
   async listarReporte() {
-    this.alertService.mostrarModalCarga();
-    switch(this.activeTab) {
-      case "home": {
-        const formato = await this.getFormatoReporte()
-        const result = await this.reporteService.getReporteViajesDetallado(formato)
-        this.alertService.cerrarModalCarga();
-        if(result.length>0) {
-          this.data = result
-        } else {
-          this.data.length = 0
-          this.alertService.showAlert('Importante!', 'No existe un reporte para mostrar', 'info');
-        }
-        break;
+  this.alertService.mostrarModalCarga();
+  switch (this.activeTab) {
+    case "home": {
+      const formato = await this.getFormatoReporte();
+      const result = await this.reporteService.getReporteViajesDetallado(formato);
+      this.alertService.cerrarModalCarga();
+
+      if (result.length > 0) {
+        this.data = result;
+        // ✅ Extraemos dinámicamente las columnas de las claves del primer registro
+        this.columnas = Object.keys(result[0]);
+      } else {
+        this.data = [];
+        this.columnas = [];
+        this.alertService.showAlert('Importante!', 'No existe un reporte para mostrar', 'info');
       }
+      break;
     }
   }
+}
+
 
   get reportesKeys(): string[] {
     return Object.keys(this.data[0]);
